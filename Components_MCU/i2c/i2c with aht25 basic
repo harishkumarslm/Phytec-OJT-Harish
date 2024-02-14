@@ -1,0 +1,39 @@
+// Header file for AHT25 driver (aht25.h)
+#ifndef AHT25_H
+#define AHT25_H
+
+#include "i2c_driver.h" // Include the I2C driver header here
+
+#define AHT25_I2C_ADDRESS 0x38 // Replace with the AHT25 I2C address
+
+void AHT25_Init(void);
+float AHT25_ReadTemperature(void);
+float AHT25_ReadHumidity(void);
+
+#endif // AHT25_H
+
+
+
+
+
+
+
+// Source file for AHT25 driver (aht25.c)
+#include "aht25.h"
+
+void AHT25_Init(void) {
+    // Initialize I2C and any other necessary setup
+}
+
+float AHT25_ReadTemperature(void) {
+    // Implement the code to read temperature from AHT25
+    // Convert the raw data to temperature using the formula from the datasheet
+    return temperature;
+}
+
+float AHT25_ReadHumidity(void) {
+    // Implement the code to read humidity from AHT25
+    // Convert the raw data to humidity using the formula from the datasheet
+    return humidity;
+}
+

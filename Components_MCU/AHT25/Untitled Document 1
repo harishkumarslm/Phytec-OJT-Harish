@@ -1,0 +1,12 @@
+#include<stdio.h>
+int main()
+{       
+        int hum,temp;
+        int s(h)=23,s(t)=33;
+        hum=(s(h)/(20^20))*100%;
+        printf("%d  the humidity is\n",hum);
+        temp=(s(t)/(20^20))*150;
+        printf("%d the temp is\n",temp);
+        return 0;
+}       
+
