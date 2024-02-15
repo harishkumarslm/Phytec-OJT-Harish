@@ -1,0 +1,146 @@
+// GPIO PA5 - LED pin
+#define LED_PIN GPIO_PIN_5
+#define LED_PORT GPIOA
+
+
+#include <stdio.h> // Include the stdio.h library for printf
+
+void WE10_Init ()
+{
+char buffer[128];
+/********* CMD+RESET **********/
+//memset(&buffer[0],0x00,strlen(buffer));
+sprintf (&buffer[0], "CMD+RESET\r\n");
+HAL_UART_Transmit_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+HAL_Delay(5000);
+HAL_UART_Receive_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+/********* CMD+WIFIMODE=1 **********/
+//memset(&buffer[0],0x00,strlen(buffer));
+sprintf (&buffer[0], "CMD+WIFIMODE=1\r\n");
+HAL_UART_Transmit_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+HAL_Delay(2000);
+HAL_UART_Receive_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+/********* CMD+CONTOAP=SSID,PASSWD **********/
+//memset(&buffer[0],0x00,strlen(buffer));
+sprintf (&buffer[0], "CMD+CONTOAP=SBCS.5.GHZ,SBCS@123\r\n");
+HAL_UART_Transmit_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+//memset(&buffer[0],0x00,strlen(buffer));
+HAL_Delay(5000);
+HAL_UART_Receive_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+/********* CMD?WIFI**********/
+//memset(&buffer[0],0x00,strlen(buffer));
+sprintf (&buffer[0], "CMD?WIFI\r\n");
+HAL_UART_Transmit_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+HAL_Delay(2000);
+HAL_UART_Receive_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+}
+void MQTT_Init()
+{
+char buffer[128];
+HAL_Delay(2000);
+/*********CMD+MQTTNETCFG **********/
+//memset(&buffer[0],0x00,strlen(buffer));
+sprintf (&buffer[0], "CMD+MQTTNETCFG=dev.rightech.io,1883\r\n");
+HAL_UART_Transmit_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+HAL_Delay(2000);
+HAL_UART_Receive_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+/*********CMD+MQTTCONCFG **********/
+//memset(&buffer[0],0x00,strlen(buffer));
+sprintf (&buffer[0], "CMD+MQTTCONCFG=3,mqtt-harishkumarslm-qcangb,,,,,,,,,\r\n");
+HAL_UART_Transmit_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+HAL_Delay(2000);
+HAL_UART_Receive_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+/*********CMD+MQTTSTART **********/
+//memset(&buffer[0],0x00,strlen(buffer));
+sprintf (&buffer[0], "CMD+MQTTSTART=1\r\n");
+HAL_UART_Transmit_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+// memset(&buffer[0],0x00,strlen(buffer));
+HAL_Delay(5000);
+HAL_UART_Receive_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+/*********CMD+MQTTSUB *********/
+//memset(&buffer[0],0x00,strlen(buffer));
+sprintf (&buffer[0], "CMD+MQTTSUB=base/state/centimeter\r\n");
+HAL_UART_Transmit_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+HAL_Delay(2000);
+HAL_UART_Receive_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+/*********CMD+MQTTPUB *********/
+//memset(&buffer[0],0x00,strlen(buffer));
+sprintf (&buffer[0], "CMD+MQTTPUB=base/state/centimeter\r\n");
+HAL_UART_Transmit_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+HAL_Delay(2000);
+HAL_UART_Receive_IT(&huart1, (uint8_t*)buffer, strlen(buffer));
+HAL_UART_Transmit_IT(&huart2, (uint8_t*)buffer, strlen(buffer));
+}
+
+void callback(const char* topic, uint8_t* payload, unsigned int length) {
+    char received_msg[length + 1];
+    memcpy(received_msg, payload, length);
+    received_msg[length] = '\0';
+
+    char msg[256]; // Buffer for the message
+
+    // Print messages using printf
+    snprintf(msg, sizeof(msg), "Message arrived in topic: %s", topic);
+    printf("%s\n", msg);
+
+    snprintf(msg, sizeof(msg), "Message: %s", received_msg);
+    printf("%s\n", msg);
+
+    if (strcmp(received_msg, "on") == 0 && !ledState) {
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET); // Turn on the LED (PA5)
+        ledState = true;
+    } else if (strcmp(received_msg, "off") == 0 && ledState) {
+        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET); // Turn off the LED (PA5)
+        ledState = false;
+    }
+
+    printf("----------------------------\n");
+}
+
+
+
+
+
+int ledState=false;
+	  const char* topic;
+	  uint8_t* payload;
+	  unsigned int length;
+	  char received_msg;
+	      memcpy(received_msg, payload, length);
+	      received_msg= '\0';
+
+	      char buffer[100];
+	      sprintf(buffer, "Message arrived in topic: %s\r\n",topic);
+	      HAL_UART_Transmit(&huart1, (uint8_t *)buffer, strlen(buffer), HAL_MAX_DELAY);
+	      HAL_UART_Transmit(&huart2, (uint8_t *)buffer, strlen(buffer), HAL_MAX_DELAY);
+	      HAL_Delay(1000);
+
+	      sprintf(buffer, "Message: %s\r\n",received_msg);
+	      HAL_UART_Transmit(&huart1, (uint8_t *)buffer, strlen(buffer), HAL_MAX_DELAY);
+	      HAL_UART_Transmit(&huart2, (uint8_t *)buffer, strlen(buffer), HAL_MAX_DELAY);
+	      HAL_Delay(1000);
+
+	      if (strcmp(received_msg, "on") == 0 && !ledState) {
+	          HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET); // Turn on the LED (PA5)
+	          ledState = true;
+	      } else if (strcmp(received_msg, "off") == 0 && ledState) {
+	          HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET); // Turn off the LED (PA5)
+	          ledState = false;
+	      }

@@ -1,0 +1,129 @@
+#include "main.h"
+#include "cmsis_os.h"
+#include "stdio.h"
+#include "string.h"
+#include "lwip/sockets.h" // Include the lwIP library for socket operations
+#include "mqtt.h"         // Include the MQTT library for MQTT operations
+
+// MQTT broker information
+#define MQTT_BROKER_ADDRESS "mqtt_server_address"
+#define MQTT_PORT 1883
+
+// MQTT message parameters
+#define MQTT_CLIENT_ID "my_client_id"
+#define MQTT_TOPIC_TEMPERATURE "sensors/temperature"
+#define MQTT_TOPIC_HUMIDITY "sensors/humidity"
+
+// Function to establish a TCP connection to the MQTT broker
+int connectToMQTTBroker() {
+    int sockfd;
+    struct sockaddr_in server_addr;
+
+    // Create a socket
+    sockfd = socket(AF_INET, SOCK_STREAM, 0);
+    if (sockfd < 0) {
+        return -1;
+    }
+
+    // Set up the server address
+    memset(&server_addr, 0, sizeof(server_addr));
+    server_addr.sin_family = AF_INET;
+    server_addr.sin_port = htons(MQTT_PORT);
+    inet_pton(AF_INET, MQTT_BROKER_ADDRESS, &server_addr.sin_addr);
+
+    // Connect to the MQTT broker
+    if (connect(sockfd, (struct sockaddr *)&server_addr, sizeof(server_addr)) < 0) {
+        close(sockfd);
+        return -1;
+    }
+
+    return sockfd;
+}
+
+// Function to publish a message to an MQTT topic
+void publishMQTTMessage(int sockfd, const char *topic, const char *message) {
+    MQTTClient client;
+    Network network;
+
+    MQTTClientInit(&client, &network, 30000, sendBuf, sizeof(sendBuf), readBuf, sizeof(readBuf));
+    network.my_socket = sockfd;
+    NewNetwork(&network, sockfd);
+
+    MQTTConnect(&client, MQTT_CLIENT_ID, "", "", 0, 0, 0, 0);
+
+    MQTTMessage mqttMessage;
+    mqttMessage.qos = QOS0;
+    mqttMessage.retained = 0;
+    mqttMessage.payload = (void *)message;
+    mqttMessage.payloadlen = strlen(message);
+
+    MQTTPublish(&client, topic, &mqttMessage);
+
+    MQTTClose(&client);
+}
+
+void read_sensor_values(float *temperature, float *humidity) {
+    // Read sensor values from your sensor and update the temperature and humidity variables
+    // For example:
+    // *temperature = read_temperature_from_sensor();
+    // *humidity = read_humidity_from_sensor();
+}
+
+// Task to read sensor values, display in Minicom, and publish to MQTT
+void send_temp(void const *argument) {
+    int sockfd = connectToMQTTBroker();
+    if (sockfd < 0) {
+        // Handle connection error
+        return;
+    }
+
+    MQTTStartTask();
+
+    // Initialize the MQTT client
+    MQTTClient client;
+    char client_id[] = "STM32_Client";
+    MQTTInitClient(&client, sockfd, publishMQTTMessage, client_id, NULL, NULL);
+
+    // Connect to MQTT broker
+    if (MQTTConnect(&client) != SUCCESS) {
+        // Handle connection error
+        return;
+    }
+
+    // Read and publish sensor values
+    while (1) {
+        float temperature, humidity;
+        read_sensor_values(&temperature, &humidity);
+
+        // Print to UART (Minicom)
+        char buffer[100];
+        sprintf(buffer, "Temperature: %.2f C, Humidity: %.2f %%\r\n", temperature, humidity);
+        HAL_UART_Transmit(&huart2, (uint8_t *)buffer, strlen(buffer), 100);
+
+        // Publish temperature and humidity to MQTT topics
+        char temperatureMessage[64];
+        char humidityMessage[64];
+        sprintf(temperatureMessage, "%.2f", temperature);
+        sprintf(humidityMessage, "%.2f", humidity);
+        publishMQTTMessage(sockfd, MQTT_TOPIC_TEMPERATURE, temperatureMessage);
+        publishMQTTMessage(sockfd, MQTT_TOPIC_HUMIDITY, humidityMessage);
+
+        osDelay(10000); // Delay before reading and publishing again
+    }
+}
+
+int main(void) {
+    // Initialize your hardware and system here
+
+    // Create the send_temp task
+    osThreadDef(send_temp, send_temp, osPriorityNormal, 0, 128);
+    osThreadCreate(osThread(send_temp), NULL);
+
+    // Start the scheduler
+    osKernelStart();
+
+    while (1) {
+        // Your main application loop
+    }
+}
+

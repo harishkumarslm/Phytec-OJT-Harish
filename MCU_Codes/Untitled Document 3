@@ -1,0 +1,96 @@
+#include "stm32f4xx.h"
+void pd3_exti_init(void);
+
+#define 	LINE3		(1U<<3)
+#define        GPIODEN		(1U<<3)
+#define        SYSCFGEN		(1U<<14)
+
+void pd3_exti_init(void)
+{
+	/*Disable global interrupts*/
+	__disable_irq();
+
+	/*Enable clock access for GPIOD*/
+	RCC->AHB1ENR |=GPIODEN;
+
+	/*Set PD3 as input*/
+	GPIOC->MODER &=~(1U<<6);
+	GPIOC->MODER &=~(1U<<7);
+
+
+	/*ENAble clock access to SYSCFG*/
+	RCC->APB2ENR |=SYSCFGEN;
+
+	/*Select PORTC for EXTI3*/
+	SYSCFG->EXTICR[0] |=(1U<<12);
+	SYSCFG->EXTICR[0] |=(1U<<13);
+
+	/*Unmask EXTI3*/
+	EXTI->IMR |=(1U<<3);
+
+	/*Select falling edge trigger*/
+	EXTI->FTSR |=(1U<<3);
+
+	/*Enable EXTI13 line in NVIC*/
+	NVIC_EnableIRQ(EXTI3_IRQn);
+
+	/*Enable global interrupts*/
+	__enable_irq();
+
+
+}
+
+
+
+#define GPIOAEN				   (1U<<0)
+#define PIN5				   (1U<<5)
+
+#define LED				   		PIN5
+
+
+static void exti_callback(void);
+
+
+int main(void)
+{
+
+
+	/*1.Enable clock access to GPIOA*/
+	RCC->AHB1ENR |= GPIOAEN;
+
+	/*2.Set PA5 as output pin*/
+	GPIOA->MODER |= (1U<<10);
+	GPIOA->MODER &=~(1U<<11);
+
+	pd3_exti_init();
+
+	while(1)
+	{
+
+
+
+	}
+
+}
+
+
+static void exti_callback(void)
+{
+	printf("BTN Pressed...\n\r");
+	GPIOA->ODR ^=LED;
+}
+
+
+void EXTI3IRQHandler(void)
+{
+	if((EXTI->PR & LINE3)!=0)
+	{
+		/*Clear PR flag*/
+		EXTI->PR |=LINE3;
+		//Do something...
+		exti_callback();
+	}
+
+}
+
+
