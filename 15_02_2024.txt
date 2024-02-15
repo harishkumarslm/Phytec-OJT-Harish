@@ -1,0 +1,3 @@
+PCB Layout creating resistor,capacitor and indictor by using altium designer appliction and create specific chip also connect the components to the chip and make a design.
+
+Github branch creation and upload the files into the git repository like yocto,E-Porting,Linux-Internals and Projects.
