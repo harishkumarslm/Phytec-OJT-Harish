@@ -1,0 +1,63 @@
+GIT BASIC COMMANDS
+
+
+create a directry git_repo
+
+$ git config --global user.name "CHAMAN26"
+
+$ git config --global user.email "chaman.k@phytecembedded.in"
+
+$ git config --global --list
+
+$ git config --global user.name
+
+$ git init
+
+$ git add <filename>
+
+$ git commit -m "first commit to git"
+
+$ git status
+
+$ git remote add origin <github_repo_url>
+
+$ git remote add origin https://github.com/CHAMAN26/yocto_recipe.git
+
+$ git push -u origin master
+
+$ git commit <filename> -m "updated code"
+
+$ git remote add origin <github_repo_url>
+
+$ git push -u origin master
+
+$ git log
+
+
+
+
+
+
+
+Creating Branch in Git
+
+$ git branch  			------------->check the num of branch present
+
+$ git branch <branch_name> 	------------->create a new branch
+
+$ git checkout <branch_name>	------------->switch to new branch
+
+develop your work in this new independent branch
+
+$ git add <filename>
+
+$ git commit -m "message"
+
+$ git remote add origin https://github.com/CHAMAN26/yocto_recipe.git
+
+$ git push origin <branch_name>
+
+
+
+
+
