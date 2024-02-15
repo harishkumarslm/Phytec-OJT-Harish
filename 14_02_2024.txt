@@ -1,0 +1,68 @@
+1)PCB Layout design class in microsoft team,The told the board like through hole and surface mount and edit github repository for adding all projects and codes.
+2)Also add new repo like harishkumrslm/Phytec-OJT-Harish and inside this repo create the branches for upload the whole 8 months did module, projects ,documnets and class notes are upload in the github repository.
+3)Modules like 
+Daily_Work_Phytec
+harishkumarslm
+ 
+32 minutes ago
+0
+0
+Phytec_Projects
+harishkumarslm
+ 
+32 minutes ago
+0
+0
+Github
+harishkumarslm
+ 
+18 hours ago
+0
+1
+FlowCharts
+harishkumarslm
+ 
+18 hours ago
+0
+1
+Module5_Yocto
+harishkumarslm
+ 
+18 hours ago
+0
+1
+Module3_Linuxinternals
+harishkumarslm
+ 
+19 hours ago
+0
+1
+Module2_MCU
+harishkumarslm
+ 
+19 hours ago
+0
+3
+Module1_Cprogram
+harishkumarslm
+ 
+yesterday
+0
+3
+MQTT_Broker
+harishkumarslm
+ 
+yesterday
+0
+0
+Module6_DeviceDriver
+harishkumarslm
+ 
+yesterday
+0
+0
+Module4_Eporting all this branches are created and upload the files into the branches by less than 100 files and some files upload in zip file.
+
+pending:
+E-porting and projects branches upload is in pending. 
+
