@@ -1,0 +1,164 @@
+Power Configuration:
+
+__HAL_RCC_PWR_CLK_ENABLE();: Enables the power control clock.
+__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);: Configures the main internal regulator output voltage scaling.
+Oscillator Configuration:
+
+RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;: Configures the oscillator type to High-Speed Internal (HSI).
+RCC_OscInitStruct.HSIState = RCC_HSI_ON;: Turns on the HSI oscillator.
+RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;: Uses the default HSI calibration value.
+RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;: Enables the Phase-Locked Loop (PLL).
+RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;: Sets the PLL source as the HSI oscillator.
+RCC_OscInitStruct.PLL.PLLM = 16;: Sets the PLLM division factor.
+RCC_OscInitStruct.PLL.PLLN = 336;: Sets the PLL multiplication factor.
+RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;: Configures the PLLP division factor.
+RCC_OscInitStruct.PLL.PLLQ = 2;: Configures the PLLQ division factor.
+RCC_OscInitStruct.PLL.PLLR = 2;: Configures the PLLR division factor.
+Clock Configuration:
+
+RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;: Configures the clock types for HCLK, SYSCLK, PCLK1, and PCLK2.
+RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;: Selects the PLL as the system clock source.
+RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;: Configures the AHB (Advanced High-Performance Bus) clock division factor.
+RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;: Configures the APB1 (Advanced Peripheral Bus 1) clock division factor.
+RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;: Configures the APB2 (Advanced Peripheral Bus 2) clock division factor.
+Error Handling:
+
+The if statements check the return values of the configuration functions (HAL_RCC_OscConfig and HAL_RCC_ClockConfig) and call an Error_Handler() function if an error occurs. The Error_Handler() function is expected to be defined elsewhere in the code.
+In summary, this code initializes and configures the system clock for an STM32 microcontroller, utilizing the HSI oscillator as the source, enabling the PLL for clock multiplication, and configuring the division factors for various clock domains.
+
+
+
+
+
+MX_TIM8_Init:
+Timer Configuration:
+
+Initializes Timer 8 (htim8) with the following parameters:
+Prescaler: 0
+Counter mode: Up-counting
+Period: 65535
+Clock division: No division
+Auto-reload preload: Disabled
+Input Capture Configuration:
+
+Initializes Timer 8 for input capture mode (HAL_TIM_IC_Init).
+Configures Timer 8 as a slave timer triggered by an external input (TIM_TS_TI2FP2 on rising edge).
+Master-Slave Configuration:
+
+Configures Timer 8 as a slave timer that resets on a trigger (TIM_SLAVEMODE_RESET).
+Configures the input trigger polarity as rising edge.
+Master Configuration:
+
+Disables the master-slave mode (TIM_MASTERSLAVEMODE_DISABLE) and resets the master output trigger.
+Input Capture Channel Configuration:
+
+Configures Timer 8, Channel 1, and Channel 2 for input capture.
+Specifies rising edge polarity, direct input mode, no prescaling, and no input filter.
+
+MX_TIM11_Init:
+Timer Configuration:
+
+Initializes Timer 11 (htim11) with the following parameters:
+Prescaler: 199
+Counter mode: Up-counting
+Period: 39999
+Clock division: No division
+Auto-reload preload: Disabled
+PWM Configuration:
+
+Initializes Timer 11 for PWM mode (HAL_TIM_PWM_Init).
+Configures PWM channel 1 with the following parameters:
+Operating mode: PWM mode 1
+Pulse value: 0
+Output polarity: High
+Fast mode: Disabled
+Post-Initialization:
+
+Invokes HAL_TIM_MspPostInit for additional peripheral-specific initialization. This function is expected to be implemented elsewhere in the code.
+In summary, these functions configure Timer 8 for input capture as a slave timer triggered by an external signal and Timer 11 for PWM generation with specific parameters. The timers are part of the STM32Cube HAL library for STM32 microcontrollers. The Error_Handler() function is called if any initialization operation fails.
+
+USART Configuration:
+
+huart2.Instance = USART2;: Specifies that the USART2 peripheral will be configured.
+huart2.Init.BaudRate = 115200;: Sets the communication baud rate to 115,200 bits per second.
+huart2.Init.WordLength = UART_WORDLENGTH_8B;: Configures the word length to 8 bits.
+huart2.Init.StopBits = UART_STOPBITS_1;: Sets the number of stop bits to 1.
+huart2.Init.Parity = UART_PARITY_NONE;: Disables parity checking.
+huart2.Init.Mode = UART_MODE_TX_RX;: Configures the USART to operate in both transmit and receive modes.
+huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;: Disables hardware flow control.
+huart2.Init.OverSampling = UART_OVERSAMPLING_16;: Configures oversampling to 16 times.
+USART Initialization:
+
+
+
+if (HAL_UART_Init(&huart2) != HAL_OK): Initializes the USART2 peripheral with the specified parameters. If initialization fails, it calls the Error_Handler() function.
+Additional Configuration (Optional):
+
+The /* USER CODE BEGIN USART2_Init 2 */ and /* USER CODE END USART2_Init 2 */ comments indicate sections where you can add any additional user-specific configuration if needed.
+In summary, this function sets up USART2 for communication with a baud rate of 115,200, 8 data bits, 1 stop bit, no parity, and both transmit and receive modes. It uses the STM32Cube HAL library, and an error handler is called if the initialization process encounters any issues.
+
+
+Clock Enable:
+
+__HAL_RCC_GPIOC_CLK_ENABLE();: Enables the clock for GPIO Port C.
+__HAL_RCC_GPIOH_CLK_ENABLE();: Enables the clock for GPIO Port H.
+__HAL_RCC_GPIOA_CLK_ENABLE();: Enables the clock for GPIO Port A.
+__HAL_RCC_GPIOB_CLK_ENABLE();: Enables the clock for GPIO Port B.
+Configure GPIO Pin Output Level:
+
+HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);: Initializes the output level of the LD2 pin to low.
+Configure GPIO Pin B1_Pin:
+
+GPIO_InitStruct.Pin = B1_Pin;: Specifies the GPIO pin B1.
+GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;: Configures the pin as an external interrupt falling edge trigger.
+GPIO_InitStruct.Pull = GPIO_NOPULL;: Configures no pull-up or pull-down resistors.
+HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);: Initializes the GPIO configuration for the B1 pin.
+Configure GPIO Pin LD2_Pin:
+
+GPIO_InitStruct.Pin = LD2_Pin;: Specifies the GPIO pin LD2.
+GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;: Configures the pin as a push-pull output.
+GPIO_InitStruct.Pull = GPIO_NOPULL;: Configures no pull-up or pull-down resistors.
+GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;: Configures the output speed as low.
+HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);: Initializes the GPIO configuration for the LD2 pin.
+Additional Configuration (Optional):
+
+The /* USER CODE BEGIN MX_GPIO_Init_1 */ and /* USER CODE END MX_GPIO_Init_1 */ comments indicate sections where you can add any additional user-specific configuration if needed.
+The /* USER CODE BEGIN MX_GPIO_Init_2 */ and /* USER CODE END MX_GPIO_Init_2 */ comments also provide space for additional user-specific configuration.
+In summary, this function sets up GPIO pins for external interrupt (B1 pin) and output (LD2 pin) on an STM32 microcontroller. The configuration includes enabling clocks, setting initial output levels, and configuring pin modes, pull-up/pull-down resistors, and speeds.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Hardware
+The RuggedBoard for phyCORE-A5D2x is a SIP (System in Peripheral) which is a
+low-cost, feature-rich software development platform supporting the Microchip’s A5D2x
+microprocessor. Moreover, due to the numerous standard interfaces the RuggedBoard A5D2x
+can serve as bedrock for your application. At the core of the RuggedBoard is the phyCORE-
+A5D2x System On Module (SOM) in a direct solder form factor, containing the processor,
+Flash, power regulation, supervision, transceivers, and other core functions required to support
+the A5D2x processor. Surrounding the SOM is the RuggedBoard carrier board, adding power
+input, buttons, connectors, signal breakout, Ethernet and mikro-BUS connectivity amongst
+other things.
+This RuggedBoardoffers an ultra-low cost Single Board Computer for the A5D2x processor,
+while maintaining most of the advantages of the SOM concept. Adding the phyCORE-A5D2x
+SOM into your own design is as simple as ordering the connector version and making use of
+our RuggedBoard Carrier Board reference schematics.
+
+

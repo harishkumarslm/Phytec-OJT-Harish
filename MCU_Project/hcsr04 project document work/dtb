@@ -1,0 +1,474 @@
+
+The Internet of Things (IoT) is a rapidly growing field that has the potential to revolutionize the way we interact with the world around us. One of the most promising applications of IoT is in the area of distance measuring between the object. By deploying IoT devices in various measuring, we can collect real-time data by measuring distance. This data can then be used to track distance between the object over time, identify potential problems, and take corrective action.
+
+This project proposes the development of an IoT-based distance monitoring system using STM32, HC-SR04, and W10 WiFi modules. The system will use an STM32 microcontroller to acquire sensor data from an HC-SR04 distance sensor. The sensor data will then be published to MQTT using the W10 WiFi module, where it can be accessed by a web application or other IoT devices. The web application will allow users to visualize the sensor data and track changes in environmental conditions over time.
+The system will be deployed in a real-world environment to test its performance. The deployment results will be used to assess the system's feasibility and identify any potential improvements.
+
+The proposed system has the potential to be a valuable tool for tracking and monitoring distance between the objects. The system is relatively low-cost and easy to deploy, making it a feasible option for a wide range of applications. The system is also scalable, making it possible to deploy it in a variety of environments.
+
+The results of this project will contribute to the body of knowledge on IoT- based distance measuring systems. The project will also provide a valuable case study for other researchers and developers who are interested in developing IoT-based ecological distance measuring  systems.
+
+
+
+
+key features of the project
+
+
+
+Sensor Initialization with Timers.
+
+UART Communication is based on Interrupt.
+
+Common function for UART receive data parsing.
+
+Timer based delay.
+
+STM32 Application is Master and configured with	W10 (Wi-Fi) module accordingly with AT commands.
+
+
+Data is pushed to the MQTT server.
+
+Data is in JASON format.
+
+distance data is pushed in every time when object is interrupt.
+
+
+
+Hardware Used and there Specification
+
+
+
+    1. STM32F411RE microcontroller
+The STM32F411RE is a high-performance microcontroller based on the ARM Cortex- M4 processor. It has a number of features that make it well-suited for a variety of applications, including:
+ 100 MHz CPU clock speed  128 KB of RAM
+ 512 KB of Flash memory  Floating point unit (FPU)
+  11 general-purpose timers
+  13 communication interfaces  USB OTG
+ RTC
+
+2.HC-SR04 sensor
+ Power Supply :+5V DC
+ Quiescent Current : <2mA
+ Working Currnt: 15mA
+ Effectual Angle: <15°
+ Ranging Distance : 2cm – 400 cm/1" ­ 13ft
+ Resolution : 0.3 cm
+ Measuring Angle: 30 degree
+ Trigger Input Pulse width: 10uS
+ Dimension: 45mm x 20mm x 15mm
+
+    3. W10 WiFi
+The W10 WiFi module is a low-cost, easy-to-use WiFi module that can be used to connect IoT devices to the internet. The module has a built-in TCP/IP stack, so it can be easily connected to a variety of IoT platforms. The module also has a number of other features, such as:
+ 100mW transmit power  11Mbps data rate
+802.11 b/g/n compatibility  Integrated antenna
+
+
+
+
+    5. Why interrupt based uart communication
+
+The advantages of interrupt-based UART communication over other methods:
+ Improved efficiency: The CPU is not constantly polling the UART status, so it can be used for other tasks. This can improve the efficiency of the system and reduce power consumption.
+ Reduced latency: Interrupt-based communication can be faster than polling, as the CPU is only interrupted when data is ready to be sent or received. This can improve the responsiveness of the system.
+ Better multitasking: Interrupt-based communication allows the CPU to handle multiple UART events simultaneously. This can be useful for applications that require frequent and asynchronous serial communication.
+Here are some of the disadvantages of interrupt-based UART communication:
+ More complex code: Interrupt-based communication is more complex to implement than polling. This is because the programmer needs to write code to handle the interrupts.
+ More overhead: Interrupt-based communication can have more overhead than polling. This is because the CPU needs to save and restore its state when it is interrupted.
+Overall, interrupt-based UART communication is a more efficient and responsive way to communicate with serial devices. However, it is more complex to implement and can have more overhead.
+
+
+
+Here are some examples of applications where interrupt-based UART communication would be a good choice:
+ Sensor networks: Sensor networks often need to communicate with each other or with a central server. Interrupt-based communication can be used to improve the efficiency and responsiveness of these networks.
+ Wireless modules: Wireless modules often use UART to communicate with the host microcontroller. Interrupt-based communication can be used to improve the performance of these modules.
+ Real-time systems: Real-time systems often need to communicate with other devices in a timely manner. Interrupt-based communication can be used to ensure that these communications are not missed.
+ 
+ 
+INTRODUCTION
+The HC­SR04 ultrasonic sensor uses sonar to determine distance to an object like bats or dolphins
+do. It offers excellent non­contact range detection with high accuracy and stable readings in an
+easy­to­use package. From 2cm to 400 cm or 1” to 13 feet. It operation is not affected by sunlight
+or black material like Sharp rangefinders are (although acoustically soft materials like cloth can be
+difficult to detect). It comes complete with ultrasonic transmitter and receiver module.
+
+Features:
+● Power Supply :+5V DC
+● Quiescent Current : <2mA
+● Working Currnt: 15mA
+● Effectual Angle: <15°
+● Ranging Distance : 2cm – 400 cm/1" ­ 13ft
+● Resolution : 0.3 cm
+● Measuring Angle: 30 degree
+● Trigger Input Pulse width: 10uS
+● Dimension: 45mm x 20mm x 15mm
+
+
+OPERATION
+The timing diagram of HC­SR04 is shown. To start measurement, Trig of SR04 must receive a
+pulse of high (5V) for at least 10us, this will initiate the sensor will transmit out 8 cycle of ultrasonic
+burst at 40kHz and wait for the reflected ultrasonic burst. When the sensor detected ultrasonic from
+receiver, it will set the Echo pin to high (5V) and delay for a period (width) which proportion to
+distance. To obtain the distance, measure the width (Ton) of Echo pin.
+Time = Width of Echo pulse, in uS (micro second)
+● Distance in centimeters = Time / 58
+● Distance in inches = Time / 148
+● Or you can utilize the speed of sound, which is 340m/s
+Note:
+● Please connect the GND pin first before supplying power to VCC.
+● Please make sure the surface of object to be detect should have at least 0.5 meter 2
+better performance.
+
+
+6.0 HARDWARE INTERFACE
+Here is example connection for Ultrasonic Ranging module to Arduino UNO board. It can be
+interface with any microcontroller with digital input such as PIC, SK40C, SK28A, SKds40A,
+Arduino series.
+
+
+
+
+9.code snippet to wifi module initialization and connection with interrupt-based uart commands
+
+
+The code first declares a buffer of 128 characters. The buffer will be used to store the commands that are sent to the WE10 module.
+
+The next few lines of code send the CMD+RESET command to the WE10 module. This command resets the module to its default state.
+
+The next line of code sends the CMD+WIFIMODE=1 command to the WE10 module. This command sets the module to operate in WiFi mode.
+
+The next line of code sends the CMD+CONTOAP=SSID, PASSWD command to the WE10 module. This command configures the module to connect to the WiFi network with the specified SSID and password.
+
+The next line of code sends the CMD.WIFI command to the WE10 module. This command queries the module for its WiFi status.
+
+The last line of code waits for 2000 milliseconds and then receives a response from the WE10 module. The response is stored in the buffer.
+
+The WE10_Init() function is a simple example of how to initialize a WE10 module and connect it to a WiFi network. The function takes no arguments and it returns void.
+
+
+10.code snippet to MQTT initialization and connection with interrupt-based uart commands
+
+
+
+The code you provided is a initialize a WE10 module and connect it to an MQTT broker. The code first declares a buffer of 128 characters. The buffer will be used to store the commands that are sent to the WE10 module.
+The next few lines of code send the CMD+MQTTNETCFG command to the WE10 module. This command configures the module to connect to the MQTT broker at dev.rightech.io on port 1883. The CMD+MQTTCONCFG command configures the module to connect to the MQTT broker as a client with the username mqtt-arifm4348- ud8eo8 and no password. The CMD+MQTTSTART command starts the MQTT client and connects to the broker. The CMD+MQTTSUB command subscribes the client to the topic base/relay/led1.
+
+The MQTT_Init() function is a simple example of how to initialize a WE10 module and connect it to an MQTT broker. The function takes no arguments and it returns void.
+Here is a more detailed explanation of the code:
+ The CMD+MQTTNETCFG command is used to configure the MQTT parameters of the WE10 module. The first parameter is the hostname or IP address of the MQTT broker. The second parameter is the port number of the MQTT broker.
+ The CMD+MQTTCONCFG command is used to configure the MQTT client of the WE10 module. The first parameter is the username of the MQTT client. The second parameter is the password of the MQTT client.
+ The CMD+MQTTSTART command is used to start the MQTT client of the WE10 module. This command connects the client to the MQTT broker.
+  The CMD+MQTTSUB command is used to subscribe the MQTT client to a topic. The first parameter is the topic that the client wants to subscribe to.
+
+
+
+
+
+SendTask:
+The SendTask is a task that will be created by the code.
+The osThreadId_t SendTaskHandle variable is used to store the handle of the SendTask. The osThreadAttr_t SendTask_attributes structure defines the attributes of the SendTask.
+The SendTask_attributes structure has three members:  name: The name of the task.
+  stack_size The size of the stack that will be allocated to the task.  priority: The priority of the task.
+In this case, the name of the task is "SendTask", the stack_size is 128 * 4 bytes, and the priority is osPriorityNormal.
+The osThreadAttr_t structure is used to configure the attributes of a task. The name member is used to set the name of the task. The stack_size member is used to set the size of the stack that will be allocated to the task. The priority member is used to set the priority of the task.
+RecieveTask:
+The RecieveTask is a task that will be created by the code.
+The osThreadId_t RecieveTaskHandle variable is used to store the handle of the RecieveTask. The osThreadAttr_t RecieveTask_attributes structure defines the attributes of the RecieveTask.
+The RecieveTask_attributes structure has three members:  name: The name of the task.
+  stack_size The size of the stack that will be allocated to the task.  priority: The priority of the task.
+In this case, the name of the task is "RecieveTask", the stack_size is 128
+* 4 bytes, and the priority is osPriorityLow.
+The osThreadAttr_t structure is used to configure the attributes of a task. The name member is used to set the name of the task. The stack_size member is used to set the size of the stack that will be allocated to the task. The priority member is used to set the priority of the task.
+
+
+
+
+
+
+
+Send_Task Function :
+
+
+The code you provided defines the Send_Task function. The Send_Task is a task that will be executed by the code.
+The Send_Task function first declares a variable of type data called DatatoSend.
+The temp member of the data structure is used to store the temperature reading, and the humidity member of the data structure is used to store the humidity reading.
+The Send_Task function then enters an infinite loop. In each iteration of the loop, the Send_Task function reads the temperature and humidity readings from the sensors, stores the readings in the DatatoSend structure, and then puts the DatatoSend structure on the myQueueTemp message queue. The osMessageQueuePut() function is used to put a message on a message queue. The first parameter is the handle of the message queue, the second parameter is a pointer to the message, the third parameter is the priority of the message, and the fourth parameter is the timeout value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+N
+The code you provided is a initialize a WE10 module and connect it to an MQTT broker. The code first declares a buffer of 128 characters. The buffer will be used to store the commands that are sent to the WE10 module.
+The next few lines of code send the CMD+MQTTNETCFG command to the WE10 module. This command configures the module to connect to the MQTT broker at dev.rightech.io on port 1883. The CMD+MQTTCONCFG command configures the module to connect to the MQTT broker as a client with the username mqtt-arifm4348- ud8eo8 and no password. The CMD+MQTTSTART command starts the MQTT client and connects to the broker. The CMD+MQTTSUB command subscribes the client to the topic base/relay/led1.
+
+The MQTT_Init() function is a simple example of how to initialize a WE10 module and connect it to an MQTT broker. The function takes no arguments and it returns void.
+Here is a more detailed explanation of the code:
+ The CMD+MQTTNETCFG command is used to configure the MQTT parameters of the WE10 module. The first parameter is the hostname or IP address of the MQTT broker. The second parameter is the port number of the MQTT broker.
+ The CMD+MQTTCONCFG command is used to configure the MQTT client of the WE10 module. The first parameter is the username of the MQTT client. The second parameter is the password of the MQTT client.
+ The CMD+MQTTSTART command is used to start the MQTT client of the WE10 module. This command connects the client to the MQTT broker.
+  The CMD+MQTTSUB command is used to subscribe the MQTT client to a topic. The first parameter is the topic that the client wants to subscribe to.INTRODUCTION
+The HC­SR04 ultrasonic sensor uses sonar to determine distance to an object like bats or dolphins
+do. It offers excellent non­contact range detection with high accuracy and stable readings in an
+easy­to­use package. From 2cm to 400 cm or 1” to 13 feet. It operation is not affected by sunlight
+or black material like Sharp rangefinders are (although acoustically soft materials like cloth can be
+difficult to detect). It comes complete with ultrasonic transmitter and receiver module.
+
+Features:
+● Power Supply :+5V DC
+● Quiescent Current : <2mA
+● Working Currnt: 15mA
+● Effectual Angle: <15°
+● Ranging Distance : 2cm – 400 cm/1" ­ 13ft
+● Resolution : 0.3 cm
+● Measuring Angle: 30 degree
+● Trigger Input Pulse width: 10uS
+● Dimension: 45mm x 20mm x 15mm
+
+
+OPERATION
+The timing diagram of HC­SR04 is shown. To start measurement, Trig of SR04 must receive a
+pulse of high (5V) for at least 10us, this will initiate the sensor will transmit out 8 cycle of ultrasonic
+burst at 40kHz and wait for the reflected ultrasonic burst. When the sensor detected ultrasonic from
+receiver, it will set the Echo pin to high (5V) and delay for a period (width) which proportion to
+distance. To obtain the distance, measure the width (Ton) of Echo pin.
+Time = Width of Echo pulse, in uS (micro second)
+● Distance in centimeters = Time / 58
+● Distance in inches = Time / 148
+● Or you can utilize the speed of sound, which is 340m/s
+Note:
+● Please connect the GND pin first before supplying power to VCC.
+● Please make sure the surface of object to be detect should have at least 0.5 meter 2
+better performance.
+
+
+6.0 HARDWARE INTERFACE
+Here is example connection for Ultrasonic Ranging module to Arduino UNO board. It can be
+interface with any microcontroller with digital input such as PIC, SK40C, SK28A, SKds40A,
+Arduino series.
+
+
+
+
+9.code snippet to wifi module initialization and connection with interrupt-based uart commands
+
+
+The code first declares a buffer of 128 characters. The buffer will be used to store the commands that are sent to the WE10 module.
+
+The next few lines of code send the CMD+RESET command to the WE10 module. This command resets the module to its default state.
+
+The next line of code sends the CMD+WIFIMODE=1 command to the WE10 module. This command sets the module to operate in WiFi mode.
+
+The next line of code sends the CMD+CONTOAP=SSID, PASSWD command to the WE10 module. This command configures the module to connect to the WiFi network with the specified SSID and password.
+
+The next line of code sends the CMD.WIFI command to the WE10 module. This command queries the module for its WiFi status.
+
+The last line of code waits for 2000 milliseconds and then receives a response from the WE10 module. The response is stored in the buffer.
+
+The WE10_Init() function is a simple example of how to initialize a WE10 module and connect it to a WiFi network. The function takes no arguments and it returns void.
+
+
+10.code snippet to MQTT initialization and connection with interrupt-based uart commands
+
+
+
+The code you provided is a initialize a WE10 module and connect it to an MQTT broker. The code first declares a buffer of 128 characters. The buffer will be used to store the commands that are sent to the WE10 module.
+The next few lines of code send the CMD+MQTTNETCFG command to the WE10 module. This command configures the module to connect to the MQTT broker at dev.rightech.io on port 1883. The CMD+MQTTCONCFG command configures the module to connect to the MQTT broker as a client with the username mqtt-arifm4348- ud8eo8 and no password. The CMD+MQTTSTART command starts the MQTT client and connects to the broker. The CMD+MQTTSUB command subscribes the client to the topic base/relay/led1.
+
+The MQTT_Init() function is a simple example of how to initialize a WE10 module and connect it to an MQTT broker. The function takes no arguments and it returns void.
+Here is a more detailed explanation of the code:
+ The CMD+MQTTNETCFG command is used to configure the MQTT parameters of the WE10 module. The first parameter is the hostname or IP address of the MQTT broker. The second parameter is the port number of the MQTT broker.
+ The CMD+MQTTCONCFG command is used to configure the MQTT client of the WE10 module. The first parameter is the username of the MQTT client. The second parameter is the password of the MQTT client.
+ The CMD+MQTTSTART command is used to start the MQTT client of the WE10 module. This command connects the client to the MQTT broker.
+  The CMD+MQTTSUB command is used to subscribe the MQTT client to a topic. The first parameter is the topic that the client wants to subscribe to.
+
+
+
+
+
+SendTask:
+The SendTask is a task that will be created by the code.
+The osThreadId_t SendTaskHandle variable is used to store the handle of the SendTask. The osThreadAttr_t SendTask_attributes structure defines the attributes of the SendTask.
+The SendTask_attributes structure has three members:  name: The name of the task.
+  stack_size The size of the stack that will be allocated to the task.  priority: The priority of the task.
+In this case, the name of the task is "SendTask", the stack_size is 128 * 4 bytes, and the priority is osPriorityNormal.
+The osThreadAttr_t structure is used to configure the attributes of a task. The name member is used to set the name of the task. The stack_size member is used to set the size of the stack that will be allocated to the task. The priority member is used to set the priority of the task.
+RecieveTask:
+The RecieveTask is a task that will be created by the code.
+The osThreadId_t RecieveTaskHandle variable is used to store the handle of the RecieveTask. The osThreadAttr_t RecieveTask_attributes structure defines the attributes of the RecieveTask.
+The RecieveTask_attributes structure has three members:  name: The name of the task.
+  stack_size The size of the stack that will be allocated to the task.  priority: The priority of the task.
+In this case, the name of the task is "RecieveTask", the stack_size is 128
+* 4 bytes, and the priority is osPriorityLow.
+The osThreadAttr_t structure is used to configure the attributes of a task. The name member is used to set the name of the task. The stack_size member is used to set the size of the stack that will be allocated to the task. The priority member is used to set the priority of the task.
+
+
+
+
+
+
+
+Send_Task Function :
+
+
+The code you provided defines the Send_Task function. The Send_Task is a task that will be executed by the code.
+The Send_Task function first declares a variable of type data called DatatoSend.
+The temp member of the data structure is used to store the temperature reading, and the humidity member of the data structure is used to store the humidity reading.
+The Send_Task function then enters an infinite loop. In each iteration of the loop, the Send_Task function reads the temperature and humidity readings from the sensors, stores the readings in the DatatoSend structure, and then puts the DatatoSend structure on the myQueueTemp message queue. The osMessageQueuePut() function is used to put a message on a message queue. The first parameter is the handle of the message queue, the second parameter is a pointer to the message, the third parameter is the priority of the message, and the fourth parameter is the timeout value.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+N
+The code you provided is a initialize a WE10 module and connect it to an MQTT broker. The code first declares a buffer of 128 characters. The buffer will be used to store the commands that are sent to the WE10 module.
+The next few lines of code send the CMD+MQTTNETCFG command to the WE10 module. This command configures the module to connect to the MQTT broker at dev.rightech.io on port 1883. The CMD+MQTTCONCFG command configures the module to connect to the MQTT broker as a client with the username mqtt-arifm4348- ud8eo8 and no password. The CMD+MQTTSTART command starts the MQTT client and connects to the broker. The CMD+MQTTSUB command subscribes the client to the topic base/relay/led1.
+
+The MQTT_Init() function is a simple example of how to initialize a WE10 module and connect it to an MQTT broker. The function takes no arguments and it returns void.
+Here is a more detailed explanation of the code:
+ The CMD+MQTTNETCFG command is used to configure the MQTT parameters of the WE10 module. The first parameter is the hostname or IP address of the MQTT broker. The second parameter is the port number of the MQTT broker.
+ The CMD+MQTTCONCFG command is used to configure the MQTT client of the WE10 module. The first parameter is the username of the MQTT client. The second parameter is the password of the MQTT client.
+ The CMD+MQTTSTART command is used to start the MQTT client of the WE10 module. This command connects the client to the MQTT broker.
+  The CMD+MQTTSUB command is used to subscribe the MQTT client to a topic. The first parameter is the topic that the client wants to subscribe to.
+
+
+

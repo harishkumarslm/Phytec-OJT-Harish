@@ -1,0 +1,602 @@
+1.project summary
+
+The Internet of Things (IoT) is a rapidly growing field that has the potential to revolutionize the way we interact with the world around us. One of the most promising applications of IoT is in the area of distance measuring between the object. By deploying IoT devices in various measuring, we can collect real-time data by measuring distance. This data can then be used to track distance between the object over time, identify potential problems, and take corrective action.
+
+This project proposes the development of an IoT-based distance monitoring system using STM32, HC-SR04, and W10 WiFi modules. The system will use an STM32 microcontroller to acquire sensor data from an HC-SR04 distance sensor. The sensor data will then be published to MQTT using the W10 WiFi module, where it can be accessed by a web application or other IoT devices. The web application will allow users to visualize the sensor data and track changes in environmental conditions over time.
+The system will be deployed in a real-world environment to test its performance. The deployment results will be used to assess the system's feasibility and identify any potential improvements.
+
+The proposed system has the potential to be a valuable tool for tracking and monitoring distance between the objects. The system is relatively low-cost and easy to deploy, making it a feasible option for a wide range of applications. The system is also scalable, making it possible to deploy it in a variety of environments.
+
+The results of this project will contribute to the body of knowledge on IoT- based distance measuring systems. The project will also provide a valuable case study for other researchers and developers who are interested in developing IoT-based ecological distance measuring  systems.
+
+2.key features of the project
+
+
+
+Sensor Initialization with Timers.
+
+UART Communication is based on Interrupt.
+
+Common function for UART receive data parsing.
+
+Timer based delay.
+
+STM32 Application is Master and configured with	W10 (Wi-Fi) module accordingly with AT commands.
+
+Data is pushed to the MQTT server.
+
+Data is in JASON format.
+
+distance data is pushed in every time when object is interrupt.
+
+
+
+
+
+
+3.Hardware Used and there Specification
+
+ 1. STM32F411RE microcontroller
+The STM32F411RE is a high-performance microcontroller based on the ARM Cortex- M4 processor. It has a number of features that make it well-suited for a variety of applications, including:
+ 100 MHz CPU clock speed  128 KB of RAM
+ 512 KB of Flash memory  Floating point unit (FPU)
+  11 general-purpose timers
+  13 communication interfaces  USB OTG
+ RTC
+
+2.HC-SR04 sensor
+ Power Supply :+5V DC
+ Quiescent Current : <2mA
+ Working Currnt: 15mA
+ Effectual Angle: <15°
+ Ranging Distance : 2cm – 400 cm/1" ­ 13ft
+ Resolution : 0.3 cm
+ Measuring Angle: 30 degree
+ Trigger Input Pulse width: 10uS
+ Dimension: 45mm x 20mm x 15mm
+
+    3. W10 WiFi
+The W10 WiFi module is a low-cost, easy-to-use WiFi module that can be used to connect IoT devices to the internet. The module has a built-in TCP/IP stack, so it can be easily connected to a variety of IoT platforms. The module also has a number of other features, such as:
+ 100mW transmit power  11Mbps data rate
+802.11 b/g/n compatibility  Integrated antenna
+
+
+ 4.Why interrupt based uart communication
+
+The advantages of interrupt-based UART communication over other methods:
+ Improved efficiency: The CPU is not constantly polling the UART status, so it can be used for other tasks. This can improve the efficiency of the system and reduce power consumption.
+ Reduced latency: Interrupt-based communication can be faster than polling, as the CPU is only interrupted when data is ready to be sent or received. This can improve the responsiveness of the system.
+ Better multitasking: Interrupt-based communication allows the CPU to handle multiple UART events simultaneously. This can be useful for applications that require frequent and asynchronous serial communication.
+Here are some of the disadvantages of interrupt-based UART communication:
+ More complex code: Interrupt-based communication is more complex to implement than polling. This is because the programmer needs to write code to handle the interrupts.
+ More overhead: Interrupt-based communication can have more overhead than polling. This is because the CPU needs to save and restore its state when it is interrupted.
+Overall, interrupt-based UART communication is a more efficient and responsive way to communicate with serial devices. However, it is more complex to implement and can have more overhead.
+
+Here are some examples of applications where interrupt-based UART communication would be a good choice:
+ Sensor networks: Sensor networks often need to communicate with each other or with a central server. Interrupt-based communication can be used to improve the efficiency and responsiveness of these networks.
+ Wireless modules: Wireless modules often use UART to communicate with the host microcontroller. Interrupt-based communication can be used to improve the performance of these modules.
+ Real-time systems: Real-time systems often need to communicate with other devices in a timely manner. Interrupt-based communication can be used to ensure that these communications are not missed.
+
+5.connection diagram
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+INTRODUCTION
+The HC­SR04 ultrasonic sensor uses sonar to determine distance to an object like bats or dolphins
+do. It offers excellent non­contact range detection with high accuracy and stable readings in an
+easy­to­use package. From 2cm to 400 cm or 1” to 13 feet. It operation is not affected by sunlight
+or black material like Sharp rangefinders are (although acoustically soft materials like cloth can be
+difficult to detect). It comes complete with ultrasonic transmitter and receiver module.
+
+Features:
+● Power Supply :+5V DC
+● Quiescent Current : <2mA
+● Working Currnt: 15mA
+● Effectual Angle: <15°
+● Ranging Distance : 2cm – 400 cm/1" ­ 13ft
+● Resolution : 0.3 cm
+● Measuring Angle: 30 degree
+● Trigger Input Pulse width: 10uS
+● Dimension: 45mm x 20mm x 15mm
+
+
+OPERATION
+The timing diagram of HC­SR04 is shown. To start measurement, Trig of SR04 must receive a
+pulse of high (5V) for at least 10us, this will initiate the sensor will transmit out 8 cycle of ultrasonic
+burst at 40kHz and wait for the reflected ultrasonic burst. When the sensor detected ultrasonic from
+receiver, it will set the Echo pin to high (5V) and delay for a period (width) which proportion to
+distance. To obtain the distance, measure the width (Ton) of Echo pin.
+Time = Width of Echo pulse, in uS (micro second)
+● Distance in centimeters = Time / 58
+● Distance in inches = Time / 148
+● Or you can utilize the speed of sound, which is 340m/s
+Note:
+● Please connect the GND pin first before supplying power to VCC.
+● Please make sure the surface of object to be detect should have at least 0.5 meter 2
+better performance.
+
+
+6.0 HARDWARE INTERFACE
+Here is example connection for Ultrasonic Ranging module to Arduino UNO board. It can be
+interface with any microcontroller with digital input such as PIC, SK40C, SK28A, SKds40A,
+Arduino series.
+
+
+
+
+9.code snippet to wifi module initialization and connection with interrupt-based uart commands
+
+
+The code first declares a buffer of 128 characters. The buffer will be used to store the commands that are sent to the WE10 module.
+
+The next few lines of code send the CMD+RESET command to the WE10 module. This command resets the module to its default state.
+
+The next line of code sends the CMD+WIFIMODE=1 command to the WE10 module. This command sets the module to operate in WiFi mode.
+
+The next line of code sends the CMD+CONTOAP=SSID, PASSWD command to the WE10 module. This command configures the module to connect to the WiFi network with the specified SSID and password.
+
+The next line of code sends the CMD.WIFI command to the WE10 module. This command queries the module for its WiFi status.
+
+The last line of code waits for 2000 milliseconds and then receives a response from the WE10 module. The response is stored in the buffer.
+
+The WE10_Init() function is a simple example of how to initialize a WE10 module and connect it to a WiFi network. The function takes no arguments and it returns void.
+
+
+10.code snippet to MQTT initialization and connection with interrupt-based uart commands
+
+
+
+The code you provided is a initialize a WE10 module and connect it to an MQTT broker. The code first declares a buffer of 128 characters. The buffer will be used to store the commands that are sent to the WE10 module.
+The next few lines of code send the CMD+MQTTNETCFG command to the WE10 module. This command configures the module to connect to the MQTT broker at dev.rightech.io on port 1883. The CMD+MQTTCONCFG command configures the module to connect to the MQTT broker as a client with the username mqtt-arifm4348- ud8eo8 and no password. The CMD+MQTTSTART command starts the MQTT client and connects to the broker. The CMD+MQTTSUB command subscribes the client to the topic base/relay/led1.
+
+The MQTT_Init() function is a simple example of how to initialize a WE10 module and connect it to an MQTT broker. The function takes no arguments and it returns void.
+Here is a more detailed explanation of the code:
+ The CMD+MQTTNETCFG command is used to configure the MQTT parameters of the WE10 module. The first parameter is the hostname or IP address of the MQTT broker. The second parameter is the port number of the MQTT broker.
+ The CMD+MQTTCONCFG command is used to configure the MQTT client of the WE10 module. The first parameter is the username of the MQTT client. The second parameter is the password of the MQTT client.
+ The CMD+MQTTSTART command is used to start the MQTT client of the WE10 module. This command connects the client to the MQTT broker.
+  The CMD+MQTTSUB command is used to subscribe the MQTT client to a topic. The first parameter is the topic that the client wants to subscribe to.
+
+
+
+
+
+SendTask:
+The SendTask is a task that will be created by the code.
+The osThreadId_t SendTaskHandle variable is used to store the handle of the SendTask. The osThreadAttr_t SendTask_attributes structure defines the attributes of the SendTask.
+The SendTask_attributes structure has three members:  name: The name of the task.
+  stack_size The size of the stack that will be allocated to the task.  priority: The priority of the task.
+In this case, the name of the task is "SendTask", the stack_size is 128 * 4 bytes, and the priority is osPriorityNormal.
+The osThreadAttr_t structure is used to configure the attributes of a task. The name member is used to set the name of the task. The stack_size member is used to set the size of the stack that will be allocated to the task. The priority member is used to set the priority of the task.
+RecieveTask:
+The RecieveTask is a task that will be created by the code.
+The osThreadId_t RecieveTaskHandle variable is used to store the handle of the RecieveTask. The osThreadAttr_t RecieveTask_attributes structure defines the attributes of the RecieveTask.
+The RecieveTask_attributes structure has three members:  name: The name of the task.
+  stack_size The size of the stack that will be allocated to the task.  priority: The priority of the task.
+In this case, the name of the task is "RecieveTask", the stack_size is 128
+* 4 bytes, and the priority is osPriorityLow.
+The osThreadAttr_t structure is used to configure the attributes of a task. The name member is used to set the name of the task. The stack_size member is used to set the size of the stack that will be allocated to the task. The priority member is used to set the priority of the task.
+
+
+
+
+
+
+
+Send_Task Function :
+
+
+The code you provided defines the Send_Task function. The Send_Task is a task that will be executed by the code.
+The Send_Task function first declares a variable of type data called DatatoSend.
+The temp member of the data structure is used to store the temperature reading, and the humidity member of the data structure is used to store the humidity reading.
+The Send_Task function then enters an infinite loop. In each iteration of the loop, the Send_Task function reads the temperature and humidity readings from the sensors, stores the readings in the DatatoSend structure, and then puts the DatatoSend structure on the myQueueTemp message queue. The osMessageQueuePut() function is used to put a message on a message queue. The first parameter is the handle of the message queue, the second parameter is a pointer to the message, the third parameter is the priority of the message, and the fourth parameter is the timeout value.
+
+
+INTRODUCTION
+The HC­SR04 ultrasonic sensor uses sonar to determine distance to an object like bats or dolphins
+do. It offers excellent non­contact range detection with high accuracy and stable readings in an
+easy­to­use package. From 2cm to 400 cm or 1” to 13 feet. It operation is not affected by sunlight
+or black material like Sharp rangefinders are (although acoustically soft materials like cloth can be
+difficult to detect). It comes complete with ultrasonic transmitter and receiver module.
+
+Features:
+● Power Supply :+5V DC
+● Quiescent Current : <2mA
+● Working Currnt: 15mA
+● Effectual Angle: <15°
+● Ranging Distance : 2cm – 400 cm/1" ­ 13ft
+● Resolution : 0.3 cm
+● Measuring Angle: 30 degree
+● Trigger Input Pulse width: 10uS
+● Dimension: 45mm x 20mm x 15mm
+
+
+
+OPERATION
+The timing diagram of HC­SR04 is shown. To start measurement, Trig of SR04 must receive a
+pulse of high (5V) for at least 10us, this will initiate the sensor will transmit out 8 cycle of ultrasonic
+burst at 40kHz and wait for the reflected ultrasonic burst. When the sensor detected ultrasonic from
+receiver, it will set the Echo pin to high (5V) and delay for a period (width) which proportion to
+distance. To obtain the distance, measure the width (Ton) of Echo pin.
+Time = Width of Echo pulse, in uS (micro second)
+● Distance in centimeters = Time / 58
+● Distance in inches = Time / 148
+● Or you can utilize the speed of sound, which is 340m/s
+Note:
+● Please connect the GND pin first before supplying power to VCC.
+● Please make sure the surface of object to be detect should have at least 0.5 meter 2
+better performance.
+
+
+6.0 HARDWARE INTERFACE
+Here is example connection for Ultrasonic Ranging module to Arduino UNO board. It can be
+interface with any microcontroller with digital input such as PIC, SK40C, SK28A, SKds40A,
+Arduino series.
+
+
+
+
+9.code snippet to wifi module initialization and connection with interrupt-based uart commands
+
+
+The code first declares a buffer of 128 characters. The buffer will be used to store the commands that are sent to the WE10 module.
+
+The next few lines of code send the CMD+RESET command to the WE10 module. This command resets the module to its default state.
+
+The next line of code sends the CMD+WIFIMODE=1 command to the WE10 module. This command sets the module to operate in WiFi mode.
+
+The next line of code sends the CMD+CONTOAP=SSID, PASSWD command to the WE10 module. This command configures the module to connect to the WiFi network with the specified SSID and password.
+
+The next line of code sends the CMD.WIFI command to the WE10 module. This command queries the module for its WiFi status.
+
+The last line of code waits for 2000 milliseconds and then receives a response from the WE10 module. The response is stored in the buffer.
+
+The WE10_Init() function is a simple example of how to initialize a WE10 module and connect it to a WiFi network. The function takes no arguments and it returns void.
+
+
+10.code snippet to MQTT initialization and connection with interrupt-based uart commands
+
+
+
+The code you provided is a initialize a WE10 module and connect it to an MQTT broker. The code first declares a buffer of 128 characters. The buffer will be used to store the commands that are sent to the WE10 module.
+The next few lines of code send the CMD+MQTTNETCFG command to the WE10 module. This command configures the module to connect to the MQTT broker at dev.rightech.io on port 1883. The CMD+MQTTCONCFG command configures the module to connect to the MQTT broker as a client with the username mqtt-arifm4348- ud8eo8 and no password. The CMD+MQTTSTART command starts the MQTT client and connects to the broker. The CMD+MQTTSUB command subscribes the client to the topic base/relay/led1.
+
+The MQTT_Init() function is a simple example of how to initialize a WE10 module and connect it to an MQTT broker. The function takes no arguments and it returns void.
+Here is a more detailed explanation of the code:
+ The CMD+MQTTNETCFG command is used to configure the MQTT parameters of the WE10 module. The first parameter is the hostname or IP address of the MQTT broker. The second parameter is the port number of the MQTT broker.
+ The CMD+MQTTCONCFG command is used to configure the MQTT client of the WE10 module. The first parameter is the username of the MQTT client. The second parameter is the password of the MQTT client.
+ The CMD+MQTTSTART command is used to start the MQTT client of the WE10 module. This command connects the client to the MQTT broker.
+  The CMD+MQTTSUB command is used to subscribe the MQTT client to a topic. The first parameter is the topic that the client wants to subscribe to.
+
+
+
+
+
+
+
+
+
+
+
+Buffer Declaration: It declares a character array buffer with a size of 50.
+
+String Formatting: The sprintf function is used to format a string and store it in the buffer. The formatted string includes a command "CMD+MQTTPUB" followed by a topic "base/state/distance" and a floating-point number with two decimal places (%.2f). The floating-point number seems to be the value of a variable dis1.
+
+UART Transmission: The HAL_UART_Transmit function is then called twice to send the formatted string over UART (Universal Asynchronous Receiver-Transmitter). It is transmitted to two different UART peripherals (huart1 and huart2). The third argument specifies the length of the data to be transmitted, and the fourth argument is the timeout duration in milliseconds.
+
+Delay: Finally, there's a delay of 100 milliseconds using HAL_Delay.
+
+In summary, this code is likely part of a larger program for an embedded system. It sends a formatted MQTT-like message containing a distance value over two UART channels with a delay afterward. The specific UART peripherals used (huart1 and huart2) and the value of the distance (dis1) are likely defined elsewhere in the code.
+
+
+
+Time-Triggered Measurement: The code checks whether a specific time interval (1 second in this case) has passed since the last measurement. This is done by comparing the current system tick (HAL_GetTick()) with the time of the last measurement (last_measurement_time).
+
+Ultrasonic Sensor Measurement: If the specified time interval has elapsed, it performs an ultrasonic distance measurement using a timer (htim8) and captures the value from Channel 1 (TIM_CHANNEL_1). The captured value is stored in the variable echo1.
+
+Distance Calculation: The echo1 value is then converted to distance (dis1) using the formula dis1 = echo1 / 58.0f, assuming it's an ultrasonic sensor measuring distance in centimeters.
+
+Print to Console: The measured values (echo1 and dis1) are printed to the console using the printf function.
+
+UART Transmission: The measured values are formatted into a string and transmitted over UART to two different peripherals (huart2 and huart1) using HAL_UART_Transmit. The transmitted string includes the distance value (dis1) and the echo value (echo1).
+
+Delay: There's a delay of 1000 milliseconds (HAL_Delay(1000)) after the measurements and UART transmissions. This delay controls the frequency of the measurements, and you can adjust it based on your application's requirements.
+
+In summary, this code performs periodic ultrasonic distance measurements, prints the results to the console, and transmits the data over UART to two different peripherals. The time interval between measurements is controlled by the specified delay of 1000 milliseconds.
+
+
+
+
+
+Power Configuration:
+
+__HAL_RCC_PWR_CLK_ENABLE();: Enables the power control clock.
+__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);: Configures the main internal regulator output voltage scaling.
+Oscillator Configuration:
+
+RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;: Configures the oscillator type to High-Speed Internal (HSI).
+RCC_OscInitStruct.HSIState = RCC_HSI_ON;: Turns on the HSI oscillator.
+RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;: Uses the default HSI calibration value.
+RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;: Enables the Phase-Locked Loop (PLL).
+RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;: Sets the PLL source as the HSI oscillator.
+RCC_OscInitStruct.PLL.PLLM = 16;: Sets the PLLM division factor.
+RCC_OscInitStruct.PLL.PLLN = 336;: Sets the PLL multiplication factor.
+RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;: Configures the PLLP division factor.
+RCC_OscInitStruct.PLL.PLLQ = 2;: Configures the PLLQ division factor.
+RCC_OscInitStruct.PLL.PLLR = 2;: Configures the PLLR division factor.
+Clock Configuration:
+
+RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;: Configures the clock types for HCLK, SYSCLK, PCLK1, and PCLK2.
+RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;: Selects the PLL as the system clock source.
+RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;: Configures the AHB (Advanced High-Performance Bus) clock division factor.
+RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;: Configures the APB1 (Advanced Peripheral Bus 1) clock division factor.
+RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;: Configures the APB2 (Advanced Peripheral Bus 2) clock division factor.
+Error Handling:
+
+The if statements check the return values of the configuration functions (HAL_RCC_OscConfig and HAL_RCC_ClockConfig) and call an Error_Handler() function if an error occurs. The Error_Handler() function is expected to be defined elsewhere in the code.
+In summary, this code initializes and configures the system clock for an STM32 microcontroller, utilizing the HSI oscillator as the source, enabling the PLL for clock multiplication, and configuring the division factors for various clock domains.
+
+
+
+
+
+MX_TIM8_Init:
+Timer Configuration:
+
+Initializes Timer 8 (htim8) with the following parameters:
+Prescaler: 0
+Counter mode: Up-counting
+Period: 65535
+Clock division: No division
+Auto-reload preload: Disabled
+Input Capture Configuration:
+
+Initializes Timer 8 for input capture mode (HAL_TIM_IC_Init).
+Configures Timer 8 as a slave timer triggered by an external input (TIM_TS_TI2FP2 on rising edge).
+Master-Slave Configuration:
+
+Configures Timer 8 as a slave timer that resets on a trigger (TIM_SLAVEMODE_RESET).
+Configures the input trigger polarity as rising edge.
+Master Configuration:
+
+Disables the master-slave mode (TIM_MASTERSLAVEMODE_DISABLE) and resets the master output trigger.
+Input Capture Channel Configuration:
+
+Configures Timer 8, Channel 1, and Channel 2 for input capture.
+Specifies rising edge polarity, direct input mode, no prescaling, and no input filter.
+MX_TIM11_Init:
+Timer Configuration:
+
+Initializes Timer 11 (htim11) with the following parameters:
+Prescaler: 199
+Counter mode: Up-counting
+Period: 39999
+Clock division: No division
+Auto-reload preload: Disabled
+PWM Configuration:
+
+Initializes Timer 11 for PWM mode (HAL_TIM_PWM_Init).
+Configures PWM channel 1 with the following parameters:
+Operating mode: PWM mode 1
+Pulse value: 0
+Output polarity: High
+Fast mode: Disabled
+Post-Initialization:
+
+Invokes HAL_TIM_MspPostInit for additional peripheral-specific initialization. This function is expected to be implemented elsewhere in the code.
+In summary, these functions configure Timer 8 for input capture as a slave timer triggered by an external signal and Timer 11 for PWM generation with specific parameters. The timers are part of the STM32Cube HAL library for STM32 microcontrollers. The Error_Handler() function is called if any initialization operation fails.
+
+USART Configuration:
+
+huart2.Instance = USART2;: Specifies that the USART2 peripheral will be configured.
+huart2.Init.BaudRate = 115200;: Sets the communication baud rate to 115,200 bits per second.
+huart2.Init.WordLength = UART_WORDLENGTH_8B;: Configures the word length to 8 bits.
+huart2.Init.StopBits = UART_STOPBITS_1;: Sets the number of stop bits to 1.
+huart2.Init.Parity = UART_PARITY_NONE;: Disables parity checking.
+huart2.Init.Mode = UART_MODE_TX_RX;: Configures the USART to operate in both transmit and receive modes.
+huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;: Disables hardware flow control.
+huart2.Init.OverSampling = UART_OVERSAMPLING_16;: Configures oversampling to 16 times.
+USART Initialization:
+
+
+
+if (HAL_UART_Init(&huart2) != HAL_OK): Initializes the USART2 peripheral with the specified parameters. If initialization fails, it calls the Error_Handler() function.
+Additional Configuration (Optional):
+
+The /* USER CODE BEGIN USART2_Init 2 */ and /* USER CODE END USART2_Init 2 */ comments indicate sections where you can add any additional user-specific configuration if needed.
+In summary, this function sets up USART2 for communication with a baud rate of 115,200, 8 data bits, 1 stop bit, no parity, and both transmit and receive modes. It uses the STM32Cube HAL library, and an error handler is called if the initialization process encounters any issues.
+
+
+Clock Enable:
+
+__HAL_RCC_GPIOC_CLK_ENABLE();: Enables the clock for GPIO Port C.
+__HAL_RCC_GPIOH_CLK_ENABLE();: Enables the clock for GPIO Port H.
+__HAL_RCC_GPIOA_CLK_ENABLE();: Enables the clock for GPIO Port A.
+__HAL_RCC_GPIOB_CLK_ENABLE();: Enables the clock for GPIO Port B.
+Configure GPIO Pin Output Level:
+
+HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);: Initializes the output level of the LD2 pin to low.
+Configure GPIO Pin B1_Pin:
+
+GPIO_InitStruct.Pin = B1_Pin;: Specifies the GPIO pin B1.
+GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;: Configures the pin as an external interrupt falling edge trigger.
+GPIO_InitStruct.Pull = GPIO_NOPULL;: Configures no pull-up or pull-down resistors.
+HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);: Initializes the GPIO configuration for the B1 pin.
+Configure GPIO Pin LD2_Pin:
+
+GPIO_InitStruct.Pin = LD2_Pin;: Specifies the GPIO pin LD2.
+GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;: Configures the pin as a push-pull output.
+GPIO_InitStruct.Pull = GPIO_NOPULL;: Configures no pull-up or pull-down resistors.
+GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;: Configures the output speed as low.
+HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);: Initializes the GPIO configuration for the LD2 pin.
+Additional Configuration (Optional):
+
+The /* USER CODE BEGIN MX_GPIO_Init_1 */ and /* USER CODE END MX_GPIO_Init_1 */ comments indicate sections where you can add any additional user-specific configuration if needed.
+The /* USER CODE BEGIN MX_GPIO_Init_2 */ and /* USER CODE END MX_GPIO_Init_2 */ comments also provide space for additional user-specific configuration.
+In summary, this function sets up GPIO pins for external interrupt (B1 pin) and output (LD2 pin) on an STM32 microcontroller. The configuration includes enabling clocks, setting initial output levels, and configuring pin modes, pull-up/pull-down resistors, and speeds.
+
+
+
+All code explain:
+
+
+This code is written for a microcontroller, likely an STM32, using the STM32CubeIDE framework. Let's break down the main components:
+
+Header Comments:
+
+Provides information about the file, its purpose, and copyright details.
+Included Libraries:
+
+main.h: Header file containing declarations for functions and variables.
+stdio.h: Standard input/output functions.
+string.h: String manipulation functions.
+Global Variables:
+
+echo1, dis, and Distance: Variables to store ultrasound sensor readings and calculated distance.
+last_measurement_time: Keeps track of the last time a measurement was taken.
+Function Prototypes:
+
+Prototypes for functions used in the code.
+Main Function:
+
+Initialization:
+
+Initializes the system, clocks, GPIO, UART, and timers.
+Starts Timer 11 and Timer 8.
+Configures Timer 11 for PWM.
+Infinite Loop:
+
+Reads the ultrasonic sensor every second.
+Calculates distance based on the sensor reading.
+Prints the sensor readings and distance over UART (USART1 and USART2).
+Pauses for one second using HAL_Delay(1000).
+System Configuration:
+
+Configures the system clock using an external crystal oscillator (HSE) and PLL.
+Enables Over-Drive mode for the CPU.
+Timer Configurations:
+
+Configures Timer 8 as an input capture timer for reading an ultrasonic sensor.
+Configures Timer 11 as a PWM output for controlling something (possibly a motor or LED).
+UART Configurations:
+
+Configures USART1 and USART2 for serial communication with a baud rate of 115200.
+GPIO Initialization:
+
+Initializes GPIO pins for a button (B1), LD2 (LED), and other unspecified pins.
+Error Handling Functions:
+
+Error_Handler: Called in case of an error. Disables interrupts and enters an infinite loop.
+assert_failed: Assertion error handler (used if USE_FULL_ASSERT is defined).
+In summary, the code initializes various peripherals, reads an ultrasonic sensor, calculates distance, and sends the results over UART. It also handles errors through error-handling functions. The specific application of this code depends on the hardware connections and the intended use of the timers and sensors.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+N
+The code you provided is a initialize a WE10 module and connect it to an MQTT broker. The code first declares a buffer of 128 characters. The buffer will be used to store the commands that are sent to the WE10 module.
+The next few lines of code send the CMD+MQTTNETCFG command to the WE10 module. This command configures the module to connect to the MQTT broker at dev.rightech.io on port 1883. The CMD+MQTTCONCFG command configures the module to connect to the MQTT broker as a client with the username mqtt-arifm4348- ud8eo8 and no password. The CMD+MQTTSTART command starts the MQTT client and connects to the broker. The CMD+MQTTSUB command subscribes the client to the topic base/relay/led1.
+
+The MQTT_Init() function is a simple example of how to initialize a WE10 module and connect it to an MQTT broker. The function takes no arguments and it returns void.
+Here is a more detailed explanation of the code:
+ The CMD+MQTTNETCFG command is used to configure the MQTT parameters of the WE10 module. The first parameter is the hostname or IP address of the MQTT broker. The second parameter is the port number of the MQTT broker.
+ The CMD+MQTTCONCFG command is used to configure the MQTT client of the WE10 module. The first parameter is the username of the MQTT client. The second parameter is the password of the MQTT client.
+ The CMD+MQTTSTART command is used to start the MQTT client of the WE10 module. This command connects the client to the MQTT broker.
+  The CMD+MQTTSUB command is used to subscribe the MQTT client to a topic. The first parameter is the topic that the client wants to subscribe to.
+
+This code is a function written in C that sends MQTT (Message Queuing Telemetry Transport) data using UART (Universal Asynchronous Receiver-Transmitter) communication.This declares a function named mqtt_data_send with no input parameters and no return value (void).
+A character array (buffer) named buffer is declared with a size of 50 characters. This buffer will be used to store the formatted MQTT message.The sprintf function is used to format a string with the MQTT message. The message includes a command ("CMD+MQTTPUB"), a topic ("base/state/distance"), and a floating-point value (dis1) with two decimal places.
+The formatted message stored in the buffer is transmitted via UART. The HAL_UART_Transmit function is used for this purpose. The message is sent to two UART interfaces (huart1 and huart2), and the third argument specifies the timeout duration (1000 milliseconds in this case).
+A delay of 100 milliseconds is introduced using HAL_Delay. This delay allows time for the UART transmissions to complete before the function exits.In summary, this code snippet is part of a larger program, and its purpose is to format and transmit an MQTT message containing distance information (dis1) over two UART interfaces (huart1 and huart2). The delay at the end ensures that there is sufficient time for the transmissions to complete before moving on.
+
+
+
+
+The code you provided is a initialize a WE10 module and connect it to an MQTT broker. The code first declares a buffer of 128 characters. The buffer will be used to store the commands that are sent to the WE10 module.
+The next few lines of code send the CMD+MQTTNETCFG command to the WE10 module. This command configures the module to connect to the MQTT broker at dev.rightech.io on port 1883. The CMD+MQTTCONCFG command configures the module to connect to the MQTT broker as a client with the username mqtt-arifm4348- ud8eo8 and no password. The CMD+MQTTSTART command starts the MQTT client and connects to the broker. The CMD+MQTTSUB command subscribes the client to the topic base/relay/led1.
+
+The MQTT_Init() function is a simple example of how to initialize a WE10 module and connect it to an MQTT broker. The function takes no arguments and it returns void.
+Here is a more detailed explanation of the code:
+ The CMD+MQTTNETCFG command is used to configure the MQTT parameters of the WE10 module. The first parameter is the hostname or IP address of the MQTT broker. The second parameter is the port number of the MQTT broker.
+ The CMD+MQTTCONCFG command is used to configure the MQTT client of the WE10 module. The first parameter is the username of the MQTT client. The second parameter is the password of the MQTT client.
+ The CMD+MQTTSTART command is used to start the MQTT client of the WE10 module. This command connects the client to the MQTT broker.
+  The CMD+MQTTSUB command is used to subscribe the MQTT client to a topic. The first parameter is the topic that the client wants to subscribe to.
+
+
+
+

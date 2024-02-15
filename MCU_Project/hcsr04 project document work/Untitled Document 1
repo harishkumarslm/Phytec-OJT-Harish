@@ -1,0 +1,10 @@
+void mqtt_data_send()
+{
+	char buffer[50];
+	sprintf (&buffer[0], "CMD+MQTTPUB=base/state/temperature,%.2f cm\r\n",distance);
+	HAL_UART_Transmit(&huart1, (uint8_t*)buffer, strlen(buffer), 1000);
+	HAL_Delay(100);
+	sprintf (&buffer[0], "CMD+MQTTPUB=base/state/humidity,%lu\r\n",echo);
+	HAL_UART_Transmit(&huart1, (uint8_t*)buffer, strlen(buffer), 1000);
+
+}
