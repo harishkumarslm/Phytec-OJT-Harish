@@ -1,0 +1,93 @@
+1)Boot mode (NOR, SD & Serial):
+
+Configure the boot mode of your embedded board. This determines from which storage medium the system will boot, such as NOR flash, SD card, or through a serial connection.
+2)TFTP Server Installation & Testing on Host:
+
+Install a TFTP (Trivial File Transfer Protocol) server on your host machine. This server allows you to transfer files to and from your embedded board during development. Test the TFTP server to ensure proper functionality.
+3)Flash using Serial SAM-BA Tool:
+
+Use the Serial SAM-BA (SAM Boot Assistant) tool to flash firmware onto the board through a serial connection. SAM-BA is often used for programming Atmel SAM microcontrollers.
+4)Run Sample Apps on Board use TFTP to transfer the Binaries from Host:
+
+Execute sample applications on the embedded board. Use TFTP to transfer binary files between your host machine and the board for testing.
+5)Erase Kernel Image on Board and capture the console Log:
+
+Delete the existing kernel image on the board and record the console logs. This helps in debugging and understanding the behavior after erasing the kernel.
+6)Erase Bootloader Image on Board and capture the console Log:
+
+Remove the current bootloader image from the board and document the console logs. This is useful for troubleshooting and understanding the impact of bootloader changes.
+7)Flash pre-built bootloader Image using TFTP:
+
+Use TFTP to transfer and flash a pre-built bootloader image onto the embedded board.
+8)Flash pre-built Kernel Image using TFTP:
+
+Utilize TFTP to transfer and flash a pre-built kernel image onto the embedded board.
+9)Flash pre-built bootloader Image using SD-Card:
+
+Instead of TFTP, use an SD card to transfer and flash a pre-built bootloader image onto the embedded board.
+10)Flash pre-built Kernel Image using SD-Card:
+
+Use an SD card to transfer and flash a pre-built kernel image onto the embedded board.
+
+11)Modify the U-Boot Command Prompt & Test:
+
+Change the U-Boot command prompt to customize the appearance of the console prompt. This is often done for branding or visual distinction.
+12)Test the behavior bootdelay env variable:
+
+The bootdelay environment variable determines the delay in seconds before U-Boot automatically proceeds with the default boot command. Test how this variable influences the boot process.
+13)Modify the Baudrate of the UART U-BOOT Console:
+
+Adjust the baud rate of the U-Boot console communication through UART. This modification is necessary if you need to match the baud rate with your UART terminal.
+14)Modify the bootcmd variable to load the kernel from TFTP Server:
+
+Change the bootcmd environment variable to specify the U-Boot command sequence for loading the kernel from a TFTP server during the boot process.
+15)Modify the bootargs to take the RFS only from SD Card & Test:
+
+Edit the bootargs environment variable to specify the kernel command-line arguments, ensuring that the root file system (RFS) is only taken from the SD card during boot. Test to verify the behavior.
+16)Modify the bootargs to take the RFS only from NFS Server:
+
+Similar to the previous task, modify the bootargs variable to configure the kernel to use the root file system (RFS) from an NFS (Network File System) server during boot.
+17)Add fwupdate command to U-Boot:
+
+Extend the U-Boot environment by adding a custom command named fwupdate. This command might be used to update firmware or perform other specific actions. Implement the functionality associated with this command.
+
+18)Modify the U-Boot Command Prompt & Test:
+
+Open the U-Boot configuration file, typically include/configs/<board_name>.h.
+Locate the CONFIG_SYS_PROMPT directive and change the value to customize the U-Boot command prompt.
+Recompile U-Boot, and test the modified command prompt.
+19)Test the behavior bootdelay env variable:
+
+In the U-Boot environment, set or modify the bootdelay variable. This determines the delay before the default boot command is executed.
+Save the environment and reboot the system to observe the behavior.
+20)Modify the Baudrate of the UART U-BOOT Console:
+
+Locate the CONFIG_BAUDRATE directive in the U-Boot configuration file.
+Adjust the value to set the desired baud rate for the UART console.
+Recompile U-Boot and test the new baud rate.
+21)Modify the bootcmd variable to load the kernel from TFTP Server:
+
+Update the bootcmd environment variable to include the necessary commands for loading the kernel from a TFTP server.
+Save the environment and test the modified bootcmd by rebooting the system.
+22)Modify the bootargs to take the RFS only from SD Card & Test:
+
+Edit the bootargs environment variable to specify the kernel command-line arguments. Ensure that the root file system (RFS) is configured to be taken only from the SD card.
+Save the environment and reboot the system to verify the behavior.
+23)Modify the bootargs to take the RFS only from NFS Server:
+
+Similar to the previous task, modify the bootargs variable to configure the kernel to use the root file system (RFS) from an NFS server.
+Save the environment and test the system to ensure the correct NFS-based root file system loading.
+24)Add fwupdate command to U-Boot:
+
+Implement the fwupdate command by adding the necessary code to the U-Boot source files.
+Compile U-Boot with the new command and ensure it is accessible from the U-Boot command prompt.
+25)Add sled driver to U-Boot:
+
+Implement the SLED (assuming some kind of Storage or System Level Embedded Driver) driver by adding the appropriate source files and configurations.
+Update the U-Boot configuration to include the new driver.
+26)Add sled_cmd to test sled driver:
+
+Implement a test command (sled_cmd) that exercises the functionality of the SLED driver.
+Compile U-Boot with the new command and test its functionality.
+
+
