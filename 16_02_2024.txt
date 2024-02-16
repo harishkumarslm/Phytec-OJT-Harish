@@ -1,0 +1,2 @@
+PCB Layout creating the pad and hole board in altium CircuitMaker by using circuit designing method also the resistor components fixed in the layout.
+Install the Altium CircuitMaker in ubuntu by using wine  app and read the basic things about components placing in PCB layout model. 
