@@ -1,0 +1,234 @@
+	========================
+	RB Application Programs
+	========================
+
+
+GPIOs LED and SWITCH Problems
+-----------------------------
+
+1.Write a c program to turn on led when we press the switch and turn off
+the led when we released the switch
+Take Input pin PD19 and Output pin PD20
+
+2.Write a c program to turn on Led when we press the switch and 
+turn off Led if again we press the switch 
+Take Input pin PD19 and Output pin PD20
+ 
+3.write a program to turn on 3 led using 3 switch
+ conditions :
+ if we press 1st switch 1st led turn on then off.
+ if we press 2nd switch 2nd led turn on then off.
+ if we press 3rd switch 3rd led turn on then off.
+Take PC13, PC17 and PC19 as output pin.
+ PD19, PD20 and PD30 as input pin.
+
+4.write a program to turn on 3 led using 3 switch.
+conditons :
+ if we press the 1st switch 1st led turn on and then off
+ if we press the 2nd switch 1st and 2nd led turn on and then off
+ if we press the 3rd switch 1st,2nd and 3rd led turn on and then off
+Take PC13, PC17 and PC19 as output pin.
+ PD19, PD20 and PD30 as input pin.
+
+5.Two switch and one led
+condition :
+ if we press the 1st switch led will turn on.
+ if we press the 2nd switch led will turn off.
+Take PC17 as output pin
+PD19 and PD20 as input pin.
+
+6.write a program using 3 led and 1 switch
+conidtion :
+ if we press the switch 1st time 1st led will turn on. 
+ if we press the switch 2nd time 2nd led will turn on.
+ if we press the switch 3rd time 3rd led will turn on.
+after releasing switch leds will be in off state.
+also show the num of times switch pressed.
+Take PC13, PC17 and PC19 as output pin.
+ PC12 as input pin.
+
+7.write a program using 3 led and 1 switch
+conidtion :
+ if we press the switch 1st time 1st led will turn on. 
+ if we press the switch 2nd time 2nd led will turn on.
+ if we press the switch 3rd time 3rd led will turn on.
+after releasing switch led state will not change.
+also show the num of times switch pressed.
+Take PC13, PC17 and PC19 as output pin.
+ PC12 as input pin.
+
+8.Write a Program using 1 led and 1 switch
+ conditions:
+f we press the switch 1st time led will toggle 1 time 
+ if we press the switch 2nd time led will toggle 2 times.
+ if we press the switch 3rd time led will toggle 3 times.
+and this should be in a loop.
+also print the number of times switch pressed.
+Take onboard led and switch.
+
+9.Write a Program using 2 leds and 1 switch
+ conditions:
+f we press the switch 1st time led1 will toggle 1 time and led2 toggle 3 times. 
+ if we press the switch 2nd time led1 will toggle 2 time and led2 toggle 6 times.
+ if we press the switch 3rd time led1 will toggle 3 time and led2 toggle 9 times.
+and this should be in a loop.
+also print the number of times switch pressed.
+Take onboard switch and leds.
+
+10.Write a Program using 1 led and 1 switch
+ conditions:
+if we press the switch 1st time led will turn on and 
+print LED ON 
+ if we press the switch 2nd time led will turn off and
+print LED OFF 
+and this should be in a loop.
+ after releasing switch led state will not change.
+also print the number of times switch pressed.
+Take onboard led and switch.
+
+11.Write a Program using 2 leds and 1 switch
+conditions:
+if we press the switch 1st time 1st led ON and 2nd led OFF
+if we press the switch 2nd time 1st led OFF and 2nd led ON
+and this should be in loop.
+after releasing switch led state will not change.
+Print: number of times switch pressed and led1, led2 state.
+Take onBoard leds and switch.
+
+
+KEYPAD Problems
+----------------
+Take keypad connection with Rugged Board as:
+keypad---->Rugged Board_Pin_No
+Rows-----> {13 14 15 16}
+column--->{23 24 25 26}
+
+12.Write a Program in Keypad Matrix to see if some key is pressed in row 1 or not and if key is
+ pressed print "key pressed in row-1"
+ 
+13.Write a Program in Keypad Matrix to see in which row key is pressed and print the
+ corresponding row.
+
+14.Write a program to interface keypad with Rugged Board and if we press any key it should 
+ print "key Pressed".
+
+15.Write a program to interface keypad with Rugged Board and if we press any key it should 
+print "key Pressed" and if we press '#' come out of the program.
+
+16.Write a program in keypad matrix to print the keypad value corresponding to key pressed 
+ in keypad matrix
+
+
+LCD Problems
+-------------
+
+17.Write a code to display string on lcd in 8 bit mode using Rugged Board.
+
+18.Write a code to display string on lcd in 4 bit mode using Rugged Board.
+
+19.Write a code to set the cursor and dispaly data on both the lines of LCD.
+
+20.Write a code to scroll the data on the LCD .
+
+21.Write a code to put the data on both the lines and then scroll only the first line data.
+
+22.Write a code to take lcd input from user at run time of code and display on lcd.
+
+23.Write a code to display the special character 'alpha', 'beta', 'pie' and 'ohm symbol' on lcd.
+
+
+7 Seg and Sensor Integration Problems
+--------------------------------------
+
+24.Write a Program to interface 7 Seg Display with RB and 
+display numbers from 0 to 9 after each sec.
+
+25.Write a program to interface IR sensor with RB and 
+prints "Obstacle detected" and "Obstacle not detected" when some Obstacle are there or not
+
+26.Write a program to interface Ultrasonic sensor with RB and 
+dispay the distance of object from sensor.
+
+
+Usart Problems
+---------------
+
+27.write a code to transfer a data and receive the same data and display using usart ttyS3,
+ ttyS1 and ttyS4. 
+
+28.write a code to control the led PC13 using usart ttyS3 when we press char 'N' or 'n' then 
+ led will turn on and if we press char 'F' or 'f' then led will turn off.
+
+29.write a code to interface rfid em-18 and print the rfid tag uid value
+
+30.Write a code to Turn ON and then Turn OFF PC13, PC17 and PC19 when rfid em-18 reads 1st
+ 2nd and 3rd rfid tag respectively.
+
+31.Write a code to display individual name corresponding to each tag read by em-18 reader.
+
+32.write a code to print lattitude and longitude using GPS6MV2 module use usart ttyS3.
+
+
+ADC Problems
+-------------
+
+33.Write a code to read analog value from POT and print on terminal.
+
+34.Write a code to interface ldr sensor and turn on PC13 led in dark and turn off led 
+ in light.
+
+35.Write a code to interface soil sensor and turn off motor(led PC13) when water is present at 
+ appropriate level and turn on motor(led PC13) when water is not present.
+
+36.Write a code to dispaly temperature using LM35D sensor.
+
+
+
+PWM Problems
+-------------
+
+37.Write a code to varies the intensity of light take external led at PD19 using pwm
+
+38.Write a code to change the position of servo motor sg90 at 0 , 90 and 180 degree 
+ using pwm.
+
+39.Write a code to change the position of sg90 as we varies the position of POT
+
+
+I2C Problems
+-------------
+
+40.Write a code to display the data on lcd using I2C module PCF8574T.
+
+41.Write a code to display Temp and Humidity using AHT25 sensor module.
+
+42.Write a code to set current time and date and then display them using DS1307 RTC module.
+
+
+SPI Problems
+-------------
+
+43.Write a Program to interface tm1637 7 seg dispaly with RB and display numbers from 0 to 9999
+
+44.Write a Prkogram to interface Rfid RC522 with RB and print the rfid tag uid value
+
+45.Write a code to Turn ON and then Turn OFF PC13, PC17 and PC19 when rfid RC522 reads 1st
+ 2nd and 3rd rfid tag respectively.
+
+46.Write a code to display individual name corresponding to each tag read by RC522 reader.
+
+
+
+MQTT Problems
+--------------
+
+47.Write a program to read Temp and Humidity using AHT25 and push the data to rightech cloud using WE10 module.
+
+48.Write a Program to Control PC13, PC17 and PC19 from rightech cloud using we10 module.
+
+49.Write a program to read Temp and Humidity using AHT25 and push the data to Things Board Phytec cloud.
+
+50.Write a Program to Control PC13, PC17 and PC19 from Things Board Phytec cloud.
+
+
+
