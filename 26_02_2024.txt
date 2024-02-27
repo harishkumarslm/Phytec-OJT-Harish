@@ -1,0 +1,3 @@
+Working with the udp(user datagram protocol) and working with the udp to tranfer data between server and client also tranfer the file between the server and client within the system and one system to another system by using ip address of the server and ipaddrs of the client.
+
+
