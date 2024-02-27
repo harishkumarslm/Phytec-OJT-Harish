@@ -1,0 +1,103 @@
+#include "stm32f4xx.h"
+#include <stdio.h>
+
+#define trigPin 9  // GPIO pin number
+#define echoPin 10 // GPIO pin number
+
+volatile uint32_t pulse_duration = 0;
+volatile uint32_t start_time = 0;
+
+void delay_us(uint32_t us) {
+    // Assuming a 16MHz clock
+    uint32_t count_value = 16 * us;
+    while (count_value--)
+        __asm("nop");
+}
+
+void GPIO_Init(void) {
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN | RCC_AHB1ENR_GPIOBEN; // Enable GPIOA and GPIOB clock
+
+    // Configure trigPin (GPIOA)
+    GPIOA->MODER |= GPIO_MODER_MODER9_0; // Output mode
+    GPIOA->OTYPER &= ~GPIO_OTYPER_OT_9;  // Push-pull
+    GPIOA->OSPEEDR |= GPIO_OSPEEDR_OSPEED9; // High speed
+    GPIOA->PUPDR &= ~GPIO_PUPDR_PUPDR9; // No pull-up/pull-down
+
+    // Configure echoPin (GPIOA) // Update the configuration to GPIOA
+    GPIOA->MODER &= ~GPIO_MODER_MODER10; // Input mode
+    GPIOA->PUPDR &= ~GPIO_PUPDR_PUPDR10; // No pull-up/pull-down
+}
+
+
+void USART2_Init(void) {
+    RCC->APB1ENR |= RCC_APB1ENR_USART2EN; // Enable USART2 clock
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN; // Enable GPIOA clock
+
+    // Configure PA2 (TX) and PA3 (RX) for USART2
+    GPIOA->MODER |= GPIO_MODER_MODER2_1 | GPIO_MODER_MODER3_1; // Alternate function mode
+    GPIOA->AFR[0] |= (7 << (4 * 2)) | (7 << (4 * 3)); // AF7 for USART2
+
+    USART2->BRR = SystemCoreClock / 115200; // Assuming 115200 baud rate
+    USART2->CR1 = USART_CR1_TE | USART_CR1_UE; // Enable USART2 and transmitter
+}
+
+void TIM2_Init(void) {
+    RCC->APB1ENR |= RCC_APB1ENR_TIM2EN; // Enable TIM2 clock
+
+    TIM2->PSC = SystemCoreClock / 1000000 - 1; // 1us resolution
+    TIM2->ARR = 0xFFFFFFFF; // Auto-reload value
+
+    TIM2->CCER &= ~TIM_CCER_CC1P; // Capture on rising edge
+    TIM2->CCER |= TIM_CCER_CC1E; // Enable capture/compare channel 1
+    TIM2->DIER |= TIM_DIER_CC1IE; // Enable capture/compare interrupt
+
+    NVIC_EnableIRQ(TIM2_IRQn); // Enable TIM2 global interrupt
+    NVIC_SetPriority(TIM2_IRQn, 0);
+}
+
+void USART2_SendChar(char ch) {
+    while (!(USART2->SR & USART_SR_TXE));
+    USART2->DR = ch;
+}
+
+void USART2_SendString(const char* str) {
+    while (*str) {
+        USART2_SendChar(*str++);
+    }
+}
+
+void TIM2_IRQHandler(void) {
+    if (TIM2->SR & TIM_SR_CC1IF) {
+        if (!(TIM2->SR & TIM_SR_CC1OF)) {
+            uint32_t capture = TIM2->CCR1;
+            pulse_duration = capture - start_time;
+        }
+        TIM2->SR = 0; // Clear the interrupt flag
+    }
+}
+
+void sendTriggerPulse(void) {
+    GPIOA->BSRR = GPIO_BSRR_BS_9; // Set trigPin high
+    delay_us(10); // Wait for 10us
+    GPIOA->BSRR = GPIO_BSRR_BR_9; // Set trigPin low
+    start_time = TIM2->CCR1; // Record the current timer value
+}
+
+int main(void) {
+    SystemInit();
+    GPIO_Init();
+    TIM2_Init();
+    USART2_Init();
+
+    while (1) {
+        sendTriggerPulse();
+        delay_us(50000); // Wait for the echo signal
+        float distance = (pulse_duration * 0.034) / 2;
+
+        // Transmit distance data over USART2
+        char buffer[50];
+        sprintf(buffer, sizeof(buffer), "Distance: %.2f cm\r\n", distance);
+        USART2_SendString(buffer);
+    }
+}
+

@@ -1,0 +1,42 @@
+#include "stm32f4xx_hal.h"
+
+void SystemClock_Config(void);
+static void Error_Handler(void);
+void USART1_Init(void);
+void GPIO_Init(void);
+
+int main(void) {
+    HAL_Init();
+    SystemClock_Config();
+    USART1_Init();
+    GPIO_Init();
+
+    uint32_t pressCount = 0;
+
+    while (1) {
+        // Check the state of the PC13 pin (connected to the switch).
+        if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == GPIO_PIN_RESET) {
+            // The switch is pressed.
+            pressCount++;
+            HAL_Delay(100);  // Debounce the switch.
+        }
+
+        // Check if the switch is released.
+        if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == GPIO_PIN_SET) {
+            HAL_Delay(100);  // Debounce the switch.
+        }
+
+        // Toggle the LED on PA5 based on the pressCount.
+        if (pressCount % 2 == 1) {
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
+        } else {
+            HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+        }
+
+        // Send the press count over USART.
+        char uartBuffer[20];
+        sprintf(uartBuffer, "Press Count: %lu\n", pressCount);
+        HAL_UART_Transmit(&huart1, (uint8_t*)uartBuffer, strlen(uartBuffer), HAL_MAX_DELAY);
+    }
+}
+
