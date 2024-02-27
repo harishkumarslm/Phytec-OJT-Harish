@@ -1,0 +1,57 @@
+#include "stm32f446xx.h" /* Function Prototypes */ 
+void RTC_Init(void); 
+void RTC_SetDateTime(uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second); 
+void RTC_GetDateTime(uint8_t* year, uint8_t* month, uint8_t* day, uint8_t* hour, uint8_t* minute, uint8_t* second); 
+int main(void) 
+{
+ uint8_t year, month, day, hour, minute, second; /* Enable power and backup interface clocks */ 
+ RCC->APB1ENR |= RCC_APB1ENR_PWREN; 
+ RCC->APB1ENR |= RCC_APB1ENR_BKPEN; /* Enable write access to the backup registers */ 
+ PWR->CR |= PWR_CR_DBP; /* Reset RTC domain */ 
+ RCC->BDCR |= RCC_BDCR_BDRST; 
+ RCC->BDCR &= ~RCC_BDCR_BDRST; /*  Enable LSE oscillator */ 
+ RCC->BDCR |= RCC_BDCR_LSEON; 
+ while(!(RCC->BDCR & RCC_BDCR_LSERDY)) ; /* Select LSE as RTC clock source*/  
+ RCC->BDCR |= RCC_BDCR_RTCSEL_0; 
+ RCC->BDCR &= ~RCC_BDCR_RTCSEL_1; /* Enable RTC clock */ 
+ RCC->BDCR |= RCC_BDCR_RTCEN; /*Initialize RTC */ 
+ RTC_Init(); /* Set the date and time */ 
+ RTC_SetDateTime(21, 9, 1, 12, 30, 0);
+  while(1) 
+  { 
+  /* Read the current date and time */ 
+  RTC_GetDateTime(&year, &month, &day, &hour, &minute, &second); /* Do something with the values... */ 
+  }
+  }
+  void RTC_Init(void) 
+  { /*Disable write protection for RTC registers*/  
+  RTC->WPR = 0xCA;
+  RTC->WPR = 0x53; /*  Enter initialization mode */ 
+  RTC->ISR |= RTC_ISR_INIT; /* Wait until initialization mode is entered */ 
+  while(!(RTC->ISR & RTC_ISR_INITF)) ; /* Configure RTC prescaler (for 1Hz clock) */ 
+  RTC->PRER = (255 << 16) | (127 << 0); /* Exit initialization mode */ 
+  RTC->ISR &= ~RTC_ISR_INIT; /* Enable write protection for RTC registers*/ s
+  RTC->WPR = 0xFF; 
+  }
+  void RTC_SetDateTime(uint8_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t second)
+  { 
+  /*Disable write protection for RTC registers*/ 
+  RTC->WPR = 0xCA; RTC->WPR = 0x53; /* Enter initialization mode */ 
+  RTC->ISR |= RTC_ISR_INIT; /* Wait until initialization mode is entered */ 
+  while(!(RTC->ISR & RTC_ISR_INITF)) ; /*  Set the date and time values */ 
+  RTC->DR = ((year % 100) << 16) | (month << 8) | (day << 0); 
+  RTC->TR = (hour << 16) | (minute << 8) | (second << 0); /*Exit initialization mode*/ 
+  RTC->ISR &= ~RTC_ISR_INIT; // Enable write protection for RTC registers RTC->WPR = 0xFF; 
+  }
+  void RTC_GetDateTime(uint8_t* year, uint8_t* month, uint8_t* day, uint8_t* hour, uint8_t* minute, uint8_t* second)
+  {
+   /* Read the date and time values*/ 
+   uint32_t dr = RTC->DR; 
+   uint32_t tr = RTC->TR; 
+   *year = (dr >> 16) % 100; 
+   *month = (dr >> 8) & 0xFF; 
+   *day = (dr >> 0) & 0xFF; 
+   *hour = (tr >> 16) & 0xFF; 
+   *minute = (tr >> 8) & 0xFF; 
+   *second = (tr >> 0) & 0xFF; 
+   } 

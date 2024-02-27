@@ -1,0 +1,39 @@
+// Include necessary headers
+#include "stm32f4xx_hal.h"
+#include "aht25.h" // Include the AHT25 driver header
+
+// I2C handle
+I2C_HandleTypeDef hi2c;
+
+// Function prototypes
+static void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+static void MX_I2C_Init(void);
+
+int main(void) {
+    // Initialize HAL and clock
+    HAL_Init();
+    SystemClock_Config();
+
+    // Initialize GPIO and I2C
+    MX_GPIO_Init();
+    MX_I2C_Init();
+
+    // Initialize AHT25 sensor
+    AHT25_Init();
+
+    while (1) {
+        // Read temperature and humidity from AHT25
+        float temperature = AHT25_ReadTemperature();
+        float humidity = AHT25_ReadHumidity();
+
+        // Do something with the temperature and humidity data (e.g., print to console, send over UART, etc.)
+
+        // Add a suitable delay between sensor readings (e.g., using HAL_Delay())
+    }
+}
+
+// Implement the HAL_I2C_MspInit function and other peripheral initialization functions (MX_GPIO_Init, MX_I2C_Init, etc.)
+
+// Implement the AHT25 driver (aht25.h and aht25.c) following the outline provided in the previous response.
+
